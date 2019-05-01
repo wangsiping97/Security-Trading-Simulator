@@ -1,4 +1,5 @@
 *.jpg
 *.svg
 *.pdf
-/data/User
+/data/User/*
+!/data/User/__init__

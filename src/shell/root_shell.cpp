@@ -108,7 +108,7 @@ bool IShell::parseCommand (string const& command) {
     }
     string cmd = vcmd[0];
     if (cmd == "reg") {
-        Logger logger(I, vcmd[1]); // 创建用户名为 vcmd[1] 的用户
+        Logger logger("User", vcmd[1]); // 创建用户名为 vcmd[1] 的用户
         if (logger.exist()) // 如果已经被注册过，则报错
             out << "\"" << vcmd[1] << "\" " << "has already been registered, please use another name." << endl;
         else { // 如果新用户名合法，则继续设置密码
@@ -124,14 +124,14 @@ bool IShell::parseCommand (string const& command) {
         }
     }
     else if (cmd == "log") {
-        Logger logger(I, vcmd[1]);
+        Logger logger("User", vcmd[1]);
         if (!logger.exist()) // 若用户名不存在，则报错，并返回初始状态
             out << "\"" << vcmd[1] << "\" " << "does not exist. Please check your username or use 'reg' to register." << endl;
         else {
             out << "password: ";
             string password;
             in >> password;
-            if (logger.login(password) == LOGIN_WRONG_PASSWORD) { // 若密码错误，则报错，并返回初始状态
+            if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your username or password." << endl;
             }
         }
@@ -193,14 +193,14 @@ bool SShell::parseCommand (string const& command) {
     }
     string cmd = vcmd[0];
     if (cmd == "log") {
-        Logger logger(S, vcmd[1]);
+        Logger logger("Stock", vcmd[1]);
         if (!logger.exist()) // 若用户名不存在，则报错，并返回初始状态
             out << "\"" << vcmd[1] << "\" " << "does not exist. Please check your SecuCode." << endl;
         else {
             out << "password: ";
             string password;
             in >> password;
-            if (logger.login(password) == LOGIN_WRONG_PASSWORD) { // 若密码错误，则报错，并返回初始状态
+            if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your username or password." << endl;
             }
         }
