@@ -1,1 +1,1 @@
-# Stock_Trading_Simulator
+#Security Trading Simulator
