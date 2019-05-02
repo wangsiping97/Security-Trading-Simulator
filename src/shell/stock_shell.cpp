@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <iomanip>
 #include "../kernel/stock.cpp"
 
 using std::string;
@@ -15,8 +16,11 @@ private:
     istream& in;
     ostream& out;
     static const char HELP[];
+    vector<string> vcmd;
 private: 
+    void cutOut (string const& input); 
     bool parseCommand (string const& command);
+    void drawLine();
 public: 
     Stock_Shell (Stock* _stock, istream& _in, ostream& _out);
     void hello();
@@ -47,6 +51,13 @@ void Stock_Shell::showCommand () {
     out << HELP << endl;
 }
 
+void Stock_Shell::cutOut (string const& input) {
+    vcmd.clear();
+    std::istringstream strcin(input);
+    string s;
+    while(strcin >> s) vcmd.push_back(s);
+}
+
 bool Stock_Shell::parseCommand(string const& command) {
     if (command == "") return true;
     if (command == "quit") {
@@ -57,12 +68,33 @@ bool Stock_Shell::parseCommand(string const& command) {
         showCommand();
         return true;
     }
+    if (command == "me") {
+        struct Info target = stock->getInfo();
+        out << endl;
+        out << "SecuCode\t" <<  stock->id << endl;
+        out << "Price\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< target.price << endl;
+        out << "Industry\t" << target.industry << endl;
+        out << "Floats\t\t" << target.floats << endl;
+        out << "ROA(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< target.roa << endl;
+        out << "ROE(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< target.roe << endl << endl;
+        return true;
+    }
     if (command == "clear") {
         system("clear");
         return true;
     }
+    cutOut (command);
+    if (vcmd.size() == 1 || vcmd.size() > 2) {
+        out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
+        showCommand();
+        return true;
+    }
+    string cmd = vcmd[0], info = vcmd[1];
+    if (cmd == "floats" || cmd == "industry" || cmd == "roa" || cmd == "roe") {
+        stock->setInfo(cmd, info);
+    }
     else {
-        out << "Invalid command/Unimplemented.Please refer to our CommandList below: " << endl;
+        out << "Invalid command.Please refer to our CommandList below: " << endl;
         showCommand();
     }
     return true;

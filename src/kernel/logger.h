@@ -9,12 +9,6 @@
 // #include "../shell/user_shell.cpp"
 #include "../shell/stock_shell.cpp"
 
-#ifdef _WIN32
-#define SLASH "\\"
-#else
-#define SLASH "/"
-#endif
-
 using std::string;
 using std::fstream;
 using std::ofstream;

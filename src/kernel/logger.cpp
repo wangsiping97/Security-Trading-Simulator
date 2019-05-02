@@ -33,6 +33,7 @@ bool Logger::login (string const& password) {
     fstream file(userPath);
     string line;
     getline(file, line);
+    file.close();
     if (line != password) {
         return false;
     }
