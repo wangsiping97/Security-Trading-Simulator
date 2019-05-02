@@ -15,7 +15,7 @@ protected:
     istream& in;
     ostream& out;
 public: 
-    void clearScreen();
+    void clearScreen ();
     Shell_Base (istream& _in, ostream& _out);
 };
 
@@ -74,7 +74,7 @@ void IShell::showCommand() {
     out << I_HELP << std::endl;
 }
 
-bool IShell::checkPassword(string const& str1, string const& str2) {
+bool IShell::checkPassword (string const& str1, string const& str2) {
     if (str1 == str2) return true;
     else {
         out << "Wrong password! Please reset your password." << endl;
@@ -100,7 +100,7 @@ bool IShell::parseCommand (string const& command) {
         clearScreen();
         return true;
     }
-    cutOut(command);
+    cutOut (command);
     if (vcmd.size() == 1 || vcmd.size() > 2) {
         out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
         showCommand();
@@ -163,7 +163,7 @@ const char SShell::S_HELP[] =
 
 SShell::SShell (istream& _in, ostream& _out): Shell_Base(_in, _out) {}
 
-void SShell::showCommand() {
+void SShell::showCommand () {
     out << S_HELP << std::endl;
 }
 
@@ -201,13 +201,13 @@ bool SShell::parseCommand (string const& command) {
             string password;
             in >> password;
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
-                out << "Log-in failed! Please check your username or password." << endl;
+                out << "Log-in failed! Please check your SecuCode or password." << endl;
             }
         }
     }
     else {
         out << "Invalid command.Please refer to our CommandList below: " << endl;
-        showCommand();
+        showCommand ();
     }
     return true;
 }

@@ -1,40 +1,4 @@
-#include <string>
-#include <fstream>
-#include <cstdlib>
-#include <unistd.h>
-// #include "user.cpp"
-// #include "stock.cpp"
-// #include "../shell/user_shell.cpp"
-// #include "../shell/stock_shell.cpp"
-
-#ifdef _WIN32
-#define SLASH "\\"
-#else
-#define SLASH "/"
-#endif
-
-using std::string;
-using std::fstream;
-using std::ofstream;
-using std::ifstream;
-using std::endl;
-
-string thispath = getcwd(NULL, 0);
-
-class Logger {
-protected: 
-    static string path;
-    string type;
-    string userName;
-    string userPath;
-public: 
-    Logger (string const& _type, string const& _userName);
-    bool exist();
-    void reg(string const& _password);
-    bool login (string const& passward);
-    // User* getNewUser();
-    // Stock* getNewStock();
-};
+#include "logger.h"
 
 string Logger::path = thispath.substr(0, thispath.length() - 4) + SLASH + "data";
 
@@ -61,9 +25,9 @@ void Logger::reg(string const& _password) {
 //     return new User (userName);
 // }
 
-// Stock* Logger::getNewStock() {
-//     return new Stock (userName);
-// }
+Stock* Logger::getNewStock() {
+    return new Stock (userName);
+}
 
 bool Logger::login (string const& password) {
     fstream file(userPath);
@@ -72,13 +36,18 @@ bool Logger::login (string const& password) {
     if (line != password) {
         return false;
     }
-    // if (type == "User") {
-    //     User* user = getNewUser();
-    //     delete user;
-    // }
-    // else {
-    //     Stock* stock = getNewStock();
-    //     delete stock;
-    // }
+    if (type == "User") {
+        std::cout << "Unimplemented :( " << endl;
+        // User* user = getNewUser();
+        // delete user;
+    }
+    else if (type == "Stock") {
+        Stock* stock = getNewStock();
+        Stock_Shell shell(stock, std::cin, std::cout);
+        shell.hello();
+        shell.showCommand();
+        shell.run();
+        delete stock;
+    }
     return true;
 }
