@@ -20,11 +20,11 @@ private:
 private: 
     void cutOut (string const& input); 
     bool parseCommand (string const& command);
-    void drawLine();
 public: 
     Stock_Shell (Stock* _stock, istream& _in, ostream& _out);
     void hello();
     void showCommand ();
+    void wrong ();
     void run ();
 }; 
 
@@ -49,6 +49,11 @@ void Stock_Shell::hello() {
 
 void Stock_Shell::showCommand () {
     out << HELP << endl;
+}
+
+void Stock_Shell::wrong () {
+    out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
+    showCommand();
 }
 
 void Stock_Shell::cutOut (string const& input) {
@@ -85,18 +90,14 @@ bool Stock_Shell::parseCommand(string const& command) {
     }
     cutOut (command);
     if (vcmd.size() == 1 || vcmd.size() > 2) {
-        out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
-        showCommand();
+        wrong ();
         return true;
     }
     string cmd = vcmd[0], info = vcmd[1];
     if (cmd == "floats" || cmd == "industry" || cmd == "roa" || cmd == "roe") {
         stock->setInfo(cmd, info);
     }
-    else {
-        out << "Invalid command.Please refer to our CommandList below: " << endl;
-        showCommand();
-    }
+    else wrong ();
     return true;
 }
 

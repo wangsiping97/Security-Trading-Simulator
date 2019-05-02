@@ -21,9 +21,9 @@ void Logger::reg(string const& _password) {
     fout << 200000 << endl;
 }
 
-// User* Logger::getNewUser() {
-//     return new User (userName);
-// }
+User* Logger::getNewUser() {
+    return new User (userName);
+}
 
 Stock* Logger::getNewStock() {
     return new Stock (userName);
@@ -38,9 +38,12 @@ bool Logger::login (string const& password) {
         return false;
     }
     if (type == "User") {
-        std::cout << "Unimplemented :( " << endl;
-        // User* user = getNewUser();
-        // delete user;
+        User* user = getNewUser();
+        User_Shell shell(user, std::cin, std::cout);
+        shell.hello();
+        shell.showCommand();
+        shell.run();
+        delete user;
     }
     else if (type == "Stock") {
         Stock* stock = getNewStock();

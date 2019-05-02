@@ -6,7 +6,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <unistd.h>
-// #include "../shell/user_shell.cpp"
+#include "../shell/user_shell.cpp"
 #include "../shell/stock_shell.cpp"
 
 using std::string;
@@ -14,8 +14,6 @@ using std::fstream;
 using std::ofstream;
 using std::ifstream;
 using std::endl;
-
-string thispath = getcwd(NULL, 0);
 
 class Logger {
 private: 
@@ -29,7 +27,7 @@ public:
     bool exist();
     void reg(string const& _password);
     bool login (string const& passward);
-    // User* getNewUser();
+    User* getNewUser();
     Stock* getNewStock();
 };
 
