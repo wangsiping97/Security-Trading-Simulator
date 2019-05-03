@@ -19,7 +19,7 @@ private:
     vector<string> vcmd;
 private: 
     void cutOut (string const& input); 
-    bool parseCommand (string const& command);
+    bool parseCommand (string& command);
 public: 
     Stock_Shell (Stock* _stock, istream& _in, ostream& _out);
     void hello();
@@ -63,7 +63,8 @@ void Stock_Shell::cutOut (string const& input) {
     while(strcin >> s) vcmd.push_back(s);
 }
 
-bool Stock_Shell::parseCommand(string const& command) {
+bool Stock_Shell::parseCommand(string& command) {
+    command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
     if (command == "quit") {
         system("clear");

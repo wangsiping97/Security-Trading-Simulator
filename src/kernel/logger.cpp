@@ -1,6 +1,6 @@
 #include "logger.h"
 
-string Logger::path = thispath.substr(0, thispath.length() - 4) + SLASH + "data";
+string Logger::path = thispath + SLASH + ".." + SLASH + "data";
 
 Logger::Logger(string const& _type, string const& _userName): type(_type), userName(_userName) {
     userPath = path + SLASH + type + SLASH + userName;
@@ -17,7 +17,6 @@ void Logger::reg(string const& _password) {
     system(("touch " + userPath).c_str());
     ofstream fout(userPath);
     fout << _password << endl;
-    fout << 200000 << endl;
     fout << 200000 << endl;
 }
 

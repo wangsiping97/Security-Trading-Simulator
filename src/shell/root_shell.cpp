@@ -39,7 +39,8 @@ void IShell::cutOut (string const& input) {
     while(strcin >> s) vcmd.push_back(s);
 }
 
-bool IShell::parseCommand (string const& command) {
+bool IShell::parseCommand (string& command) {
+    command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
     if (command == "reset") return false; // 退出投资者环境
     if (command == "help") {
@@ -124,7 +125,8 @@ void SShell::cutOut (string const& input) {
     while(strcin >> s) vcmd.push_back(s);
 }
 
-bool SShell::parseCommand (string const& command) {
+bool SShell::parseCommand (string& command) {
+    command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
     if (command == "reset") return false; // 退出证券环境
     if (command == "help") {

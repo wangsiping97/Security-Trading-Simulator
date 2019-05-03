@@ -31,7 +31,7 @@ private:
 private:
     bool checkPassword(string const& str1, string const& str2);
     void cutOut (string const& input); 
-    bool parseCommand (string const& command);
+    bool parseCommand (string& command);
 public: 
     void showCommand ();
     IShell (istream& _in, ostream& _out);
@@ -46,7 +46,7 @@ private:
     vector<string> vcmd;
 private:
     void cutOut (string const& input); 
-    bool parseCommand (string const& command);
+    bool parseCommand (string& command);
 public: 
     void showCommand ();
     SShell (istream& _in, ostream& _out);

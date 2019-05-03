@@ -43,22 +43,23 @@ public:
 
 Stock::Stock (string const& _id): id(_id) {
     string thispath = getcwd(NULL, 0);
-    myPath = thispath.substr(0, thispath.length() - 4) + SLASH + "data" + SLASH + "Stock" + SLASH + id;
+    myPath = thispath + SLASH + ".." + SLASH + "data" + SLASH + "Stock" + SLASH + id;
 }
 
 struct Info Stock::getInfo() {
     fstream file(myPath);
     string line;
-    getline(file, line); 
-    getline(file, line);
+    getline(file, line); // password
+    getline(file, line); // price
     myInfo.price = atof(line.data()); 
-    getline(file, line);
+    getline(file, line); // floats available
+    getline(file, line); // industry
     myInfo.industry = line;
-    getline(file, line);
+    getline(file, line); // floats
     myInfo.floats = atoi(line.data());
-    getline(file, line);
+    getline(file, line); // roa
     myInfo.roa = atof(line.data());
-    getline(file, line);
+    getline(file, line); // roe
     myInfo.roe = atof(line.data());
     file.close();
     return myInfo;
@@ -87,10 +88,13 @@ void Stock::updateInfo() {
     getline(file, password);
     string price;
     getline(file, price);
+    string floats_available;
+    getline (file, floats_available);
     file.close();
     ofstream out(myPath);
     out << password << endl;
     out << price << endl;
+    out << floats_available << endl;
     out << myInfo.industry << endl;
     out << myInfo.floats << endl;
     out << myInfo.roa << endl;
