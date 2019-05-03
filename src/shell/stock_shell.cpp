@@ -95,7 +95,24 @@ bool Stock_Shell::parseCommand(string& command) {
         return true;
     }
     string cmd = vcmd[0], info = vcmd[1];
-    if (cmd == "floats" || cmd == "industry" || cmd == "roa" || cmd == "roe") {
+    if (cmd == "floats") {
+        int new_floats = atoi(info.data());
+        if (new_floats <= 0) {
+            out << "Invalid settings." << endl;
+            return true;
+        }
+        stock->setInfo(cmd, info);
+        // 调用 trading 类的方法
+    }
+    else if (cmd == "industry") {
+        stock->setInfo(cmd, info);
+    }
+    else if (cmd == "roa" || cmd == "roe") {
+        double new_info = atof(info.data());
+        if (new_info <= 0) {
+            out << "Invalid settings." << endl;
+            return true;
+        }
         stock->setInfo(cmd, info);
     }
     else wrong ();

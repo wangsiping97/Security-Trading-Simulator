@@ -3,3 +3,5 @@
 *.pdf
 /data/User/*
 !/data/User/__init__
+/bin/main
+/.vscode

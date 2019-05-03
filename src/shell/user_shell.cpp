@@ -16,16 +16,18 @@ private:
     istream& in;
     ostream& out;
     static const char HELP[];
+    static const char INSTRUCTION[];
     vector<string> vcmd;
 private: 
-    void cutOut (string const& input); 
-    bool parseCommand (string const& command);
+    void cutOut (string const& input, const char flag); 
+    bool parseCommand (string& command);
+    void wrong ();
+    void wrongStock (string const& id);
+    void showStockList();
 public: 
     User_Shell (User* _user, istream& _in, ostream& _out);
     void hello();
     void showCommand ();
-    void showStockList();
-    void wrong ();
     void run ();
 }; 
 
@@ -36,9 +38,20 @@ const char User_Shell::HELP[] =
     "t- [SecuCode] [Number of Shares] [price]  short a security\n"
     "account                            see your account status\n"
     "stock                                      show stock list\n"
+    "select ?                        show 'select' instructions\n"
     "select ... from [secu-code]              look up secu-info\n"
     "clear                                         clear screen\n"
     "quit                                               log out\n"
+    "----------------------------------------------------------";
+
+const char User_Shell::INSTRUCTION[] = 
+    "---------------------- INSTRUCTIONS ----------------------\n"
+    "select * from [secu-code]                 look up all info\n"
+    "select price from [secu-code]                look up price\n"
+    "select price,roa from [secu-code]      look up price & roa\n"
+    "...                                                       \n"
+    "Items available: price, industry, floats, roa, roa        \n"
+    "NOTICE! NO BLANK between items, only ',' is valid         \n"
     "----------------------------------------------------------";
 
 User_Shell::User_Shell (User* _user, istream& _in, ostream& _out): user(_user), in(_in), out(_out) {}
@@ -63,14 +76,21 @@ void User_Shell::wrong () {
     showCommand();
 }
 
-void User_Shell::cutOut (string const& input) {
-    vcmd.clear();
-    std::istringstream strcin(input);
-    string s;
-    while(strcin >> s) vcmd.push_back(s);
+void User_Shell::wrongStock(string const& id) {
+    out << id << " is not in the stock list. Select a stock from below: " << endl;
+    showStockList();
 }
 
-bool User_Shell::parseCommand(string const& command) {
+void User_Shell::cutOut (string const& input, const char flag) {
+    vcmd.clear();
+    std::istringstream iss(input);
+    string temp;
+    while (getline(iss, temp, flag)) 
+        vcmd.push_back(temp);
+}
+
+bool User_Shell::parseCommand(string& command) {
+    command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
     if (command == "quit") {
         system("clear");
@@ -90,39 +110,93 @@ bool User_Shell::parseCommand(string const& command) {
         return true;
     }
     if (command == "account") {
-        out << "Unimplemented :(" << endl;
+        struct Account account = user->getAccount();
+        out << endl;
+        out << user->name << "\t" << "金额\t\t" << "持仓\t" << "成本价\t" << "现价\t" << "盈亏(%)" << endl;
+        if (!account.asset.empty()) {
+            map<string, struct Value>::iterator iter;
+            for (iter = account.asset.begin(); iter != account.asset.end(); iter++) {
+                out << iter->first << "\t";
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price * iter->second.numFloats << "\t";
+                out << iter->second.numFloats << "\t";
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.cost << "\t";
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price << "\t";
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.yeild << endl;
+            }
+        }
+        out << "可用\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.available << endl;
+        out << "总资产\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.total << endl;
+        out << endl;
         return true;
     }
-    cutOut (command);
-    if (vcmd.size() == 1 || vcmd.size() > 4) {
+    if (command == "select ?") {
+        out << INSTRUCTION << endl;
+        return true;
+    }
+    cutOut (command, ' ');
+    if (vcmd.size() == 1 || vcmd.size() == 2 || vcmd.size() == 3 || vcmd.size() > 4) {
         wrong ();
         return true;
     }
     string cmd = vcmd[0];
     if (cmd == "t+") {
-        out << "Unimplemented :(" << endl;
+        string id = vcmd[1];
+        string price = user->search("price", id);
+        if (price == "") {
+            wrongStock (id);
+            return true;
+        }
+        int numBid = atoi(vcmd[2].data());
+        if (numBid <= 0) {
+            out << "Invalid number of shares." << endl;
+            return true;
+        }
+        double bidPrice = atof(vcmd[3].data());
+        if (bidPrice <= 0) {
+            out << "Invalid bid price." << endl;
+            return true;
+        }
+        // 调用 trading 类的方法
+        out << "Request received!" << endl;
     }
     else if (cmd == "t-") {
-        out << "Unimplemented :(" << endl;
+        string id = vcmd[1];
+        string price = user->search("price", id);
+        if (price == "") {
+            wrongStock (id);
+            return true;
+        }
+        int numBid = atoi(vcmd[2].data());
+        if (numBid <= 0) {
+            out << "Invalid number of shares." << endl;
+            return true;
+        }
+        double bidPrice = atof(vcmd[3].data());
+        if (bidPrice <= 0) {
+            out << "Invalid bid price." << endl;
+            return true;
+        }
+        // 调用 trading 类的方法
+        out << "Request received!" << endl;
     }
     else if (cmd == "select") {
+        string id = vcmd[3];
         string from = vcmd[2];
-        if (from != "from") wrong();
+        if (from != "from") {
+            out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
+            out << INSTRUCTION << endl;
+        }
         else {
-            string price = user->search("price", vcmd[3]);
-            if (price == "") {
-                out << vcmd[3] << " is not in the stock list. Select a stock from below: " << endl;
-                showStockList();
-                return true;
-            }
-            string industry = user->search("industry", vcmd[3]);
-            string floats = user->search("floats", vcmd[3]);
-            string roa = user->search("roa", vcmd[3]);
-            string roe = user->search("roe", vcmd[3]);
+            string price = user->search("price", id);
+            if (price == "") wrongStock (id);
+            string industry = user->search("industry", id);
+            string floats = user->search("floats", id);
+            string roa = user->search("roa", id);
+            string roe = user->search("roe", id);
             string item = vcmd[1];
             if (item == "*") {
                 out << endl;
-                out << "SecuCode\t" <<  vcmd[3] << endl;
+                out << "SecuCode\t" <<  id << endl;
                 out << "Price\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(price.data()) << endl;
                 out << "Industry\t" << industry << endl;
                 out << "Floats\t\t" << floats << endl;
@@ -130,7 +204,32 @@ bool User_Shell::parseCommand(string const& command) {
                 out << "ROE(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(roe.data()) << endl << endl;
             }
             else {
-                out << "Unimplemented :(" << endl;
+                cutOut(item, ',');
+                vector<string>::iterator iter;
+                vector<string> vitem, vres;
+                vitem.clear(); vres.clear();
+                for (iter = vcmd.begin(); iter != vcmd.end(); iter++) {
+                    std::cout << *iter << std::endl;
+                    if (*iter == "price" || *iter == "industry" || *iter == "floats" || *iter == "roa" || *iter == "roa") {
+                        vitem.push_back(*iter);
+                        vres.push_back(user->search(*iter, id));
+                    }
+                    else {
+                        out << "Wrong item. Try select another item, or use \"select * from ...\" to look up all the information." << endl;
+                        return true;
+                    }
+                }
+                out << endl;
+                out << "SecuCode\t" <<  id << endl;
+                int s = vitem.size();
+                for (int i = 0; i < s; i++) {
+                    if (vitem[i] == "price") out << "Price\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(price.data()) << endl;
+                    else if (vitem[i] == "industry") out << "Industry\t" << industry << endl;
+                    else if (vitem[i] == "floats") out << "Floats\t\t" << floats << endl;
+                    else if (vitem[i] == "roa") out << "ROA(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(roa.data()) << endl;
+                    else out << "ROE(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(roe.data()) << endl;
+                }
+                out << endl;
             }
         }
     }
