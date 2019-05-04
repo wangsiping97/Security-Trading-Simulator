@@ -1,4 +1,144 @@
-#include "trading.h"
+#ifndef _TRADING_H
+#define _TRADING_H
+
+#include <iostream>
+#include <string>
+#include <fstream>
+#include <cstdlib>
+#include <vector>
+#include <map> 
+#include <algorithm>
+#ifdef WIN32  
+#include <direct.h>  
+#include <io.h>  
+#else
+#include <unistd.h>
+#include <dirent.h>
+#endif
+
+using std::string;
+using std::map;
+using std::vector;
+using std::fstream;
+using std::ofstream;
+using std::ifstream;
+using std::endl;
+
+#ifdef _WIN32
+#define SLASH "\\"
+#else
+#define SLASH "/"
+#endif
+
+string thisPath = getcwd(NULL, 0);
+string stockPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "Stock";
+string userPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "User";
+
+struct Buy {
+    double price;
+    int num_of_shares;
+    string userName;
+    Buy() {}
+    Buy (double _price, int _num_of_shares);
+    Buy (double _price, int _num_of_shares, string _userName);
+    // 重载 < 操作符
+    bool operator < (const struct Buy& right) const;
+    bool operator > (const struct Buy& right) const;
+};
+
+Buy::Buy (double _price, int _num_of_shares): price(_price), num_of_shares(_num_of_shares) {
+    userName = "";
+}
+
+Buy::Buy (double _price, int _num_of_shares, string _userName): price(_price), num_of_shares(_num_of_shares), userName(_userName) {}
+
+bool Buy::operator < (const struct Buy& right) const {
+    return price <= right.price; // 相等时，先来的 > 后来的
+}
+
+bool Buy::operator > (const struct Buy& right) const {
+    return price > right.price; // 相等时，先来的 > 后来的
+}
+
+struct Sell {
+    double price;
+    int num_of_shares;
+    string userName;
+    Sell () {}
+    Sell (double _price, int _num_of_shares);
+    Sell (double _price, int _num_of_shares, string _userName);
+    bool operator > (const struct Sell& right) const;
+    bool operator < (const struct Sell& right) const;
+};
+
+Sell::Sell (double _price, int _num_of_shares): price(_price), num_of_shares(_num_of_shares) {
+    userName = "";
+}
+
+Sell::Sell (double _price, int _num_of_shares, string _userName): price(_price), num_of_shares(_num_of_shares), userName(_userName) {}
+
+bool Sell::operator > (const struct Sell& right) const {
+    return price >= right.price; // 相等时，先来的 < 后来的
+}
+
+bool Sell::operator < (const struct Sell& right) const {
+    return price < right.price; // 相等时，先来的 < 后来的
+}
+
+struct Bids { // 每一只股票的挂牌信息
+    string id;
+    vector<struct Buy> buysInfo;
+    vector<struct Sell> sellsInfo;
+    Bids () {}
+    Bids (string _id);
+    bool operator < (const struct Bids& right) const;
+};
+
+Bids::Bids (string _id): id(_id) {
+    buysInfo.clear();
+    sellsInfo.clear();
+    fstream file (stockPath + SLASH + id);
+    string line;
+    getline(file, line); // password
+    getline(file, line); // price
+    double openPrice = atof(line.data());
+    getline(file, line); // floats_available
+    int floats = atoi(line.data());
+    struct Sell initSell(openPrice, floats);
+    sellsInfo.push_back(initSell);
+    std::make_heap(std::begin(sellsInfo), std::end(sellsInfo)); // 卖堆，默认降序
+    struct Buy initBuy(-1, -1);
+    buysInfo.push_back(initBuy);
+    std::make_heap(begin(buysInfo), end(buysInfo), std::greater<struct Buy>()); // 买堆，升序
+    file.close();
+}
+
+bool Bids::operator < (const struct Bids& right) const {
+    return id <= right.id; // 相等时，先来的 < 后来的
+}
+
+class Trading {
+protected: 
+    static bool haveStock (string const& name, string const& id); // 判断仓中是否有这只股票
+    static double getAvaliable (string const& name); // 返回可用资金
+    static void updateAvailable (string const& name, double diff_available); // 更新可用资金
+    static int getHave (string const& name, string const& id); // 返回持仓数
+    static void updateHave (string const& name, string const& id, int new_num); // 更新持仓数
+    static double getCost (string const& name, string const& id); // 返回原有成本价
+    static void updateCost (string const& name, string const& id, double new_cost); // 更新成本价
+    static void deleteId (string const& name, string const& id); // 从账户中删除股票
+    static void updatePrice (string const& id, double new_price); // 更新股价
+    static void updateFloats_available (string const& id, int diff_floats); // 更新 floats_available
+    static void trading (string const& id); // 交易
+public: 
+    static map<string, struct Bids> tradingPool;
+    static void init();
+    static bool addBuy (string const& name, string const& id, int num, double cost);
+    static bool addSell (string const& name, string const& id, int num, double cost);
+    static bool isEmpty (string const& id);
+    static void changeFloats (string const& id, double old_price, int old_floats_available, int old_floats, int new_floats);
+    static void reset(); // 程序结束运行时，还原 tradingPool 中数据
+};
 
 map<string, struct Bids> Trading::tradingPool;
 
@@ -222,6 +362,8 @@ void Trading::deleteId (string const& name, string const& id) {
     out.close();
 }
 
+// public 函数
+
 bool Trading::isEmpty (string const& id) {
     return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 1;
 }
@@ -324,3 +466,8 @@ void Trading::reset() {
         }
     }
 }
+
+
+
+
+#endif // TRADING_H
