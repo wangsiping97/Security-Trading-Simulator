@@ -1,29 +1,4 @@
-#ifndef _STOCK_H
-#define _STOCK_H
-
-#include "trading.cpp"
-
-struct Info {
-    double price;
-    int floats_available;
-    string industry;
-    int floats;
-    double roa;
-    double roe;
-};
-
-class Stock {
-private: 
-    string myPath;
-    struct Info myInfo;
-public: 
-    string id;
-public: 
-    Stock (string const& _id);
-    struct Info getInfo();
-    bool setInfo(string const&type, string const& newInfo);
-    void updateInfo();
-};
+#include "stock.h"
 
 Stock::Stock (string const& _id): id(_id) {
     myPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "Stock" + SLASH + id;
@@ -90,5 +65,3 @@ void Stock::updateInfo() {
     out << myInfo.roa << endl;
     out << myInfo.roe << endl;
 }
-
-#endif

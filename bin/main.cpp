@@ -21,6 +21,12 @@ bool test (std::string _ans) {
 }
 
 void loop() {
+    Trading::init();
+    #ifdef _WIN32
+    system("cls");
+    #else
+    system("clear");
+    #endif
     std::string ans;
     do {
         std::cout << "Welcome to STS! Are you an investor (I) or a security manager (S)? \nI/S? ";
@@ -29,8 +35,15 @@ void loop() {
 }
 
 int main() {
+    #ifdef _WIN32
+    system("cls");
+    #else
     system("clear");
-    Trading::init();
+    #endif
+    std::cout << string(9, '\n');
+    std::cout << "                        Security Trading Simulator                        \n";
+    std::cout << string(3, '\n');
+    std::cout << "                            by Siping Wang @ THU                           \n";
     loop();
     return 0;
 }

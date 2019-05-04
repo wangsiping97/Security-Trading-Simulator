@@ -1,32 +1,4 @@
-#ifndef _USER_H
-#define _USER_H
-
-#include "trading.cpp"
-
-struct Value {
-    int numFloats;
-    double price;
-    double cost;
-    double yield;
-};
-
-struct Account {
-    map<string, struct Value> asset; // id, 持股数
-    double available; // 可用
-    double total; // 总资产
-};
-
-class User {
-private: 
-    string myPath;
-    struct Account myAccount;
-public: 
-    string name;
-public: 
-    User (string const& _name);
-    string search (string const& item, string const& id);
-    struct Account getAccount();
-};
+#include "user.h"
 
 User::User (string const& _name): name(_name) {
     myPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "User" + SLASH + name;
@@ -74,5 +46,3 @@ struct Account User::getAccount () {
     }
     return myAccount;
 }
-
-#endif
