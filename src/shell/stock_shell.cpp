@@ -38,6 +38,7 @@ const char Stock_Shell::HELP[] =
     "roe [new roe]                                    reset roe\n"
     "clear                                         clear screen\n"
     "quit                                               log out\n"
+    "ATTENTION! Only change floats when there is no bid!       \n"
     "----------------------------------------------------------";
 
 Stock_Shell::Stock_Shell (Stock* _stock, istream& _in, ostream& _out): stock(_stock), in(_in), out(_out) {}
@@ -101,7 +102,10 @@ bool Stock_Shell::parseCommand(string& command) {
             out << "Invalid settings." << endl;
             return true;
         }
-        stock->setInfo(cmd, info);
+        if (!stock->setInfo(cmd, info)) {
+            out << "DO NOT reset floats when there are bids in the trading pool." << endl;
+            return true;
+        }
     }
     else if (cmd == "industry") {
         stock->setInfo(cmd, info);

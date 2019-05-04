@@ -135,6 +135,7 @@ public:
     static void init();
     static bool addBuy (string const& name, string const& id, int num, double cost);
     static bool addSell (string const& name, string const& id, int num, double cost);
+    static bool isEmpty (string const& id);
     static void changeFloats (string const& id, double old_price, int old_floats_available, int old_floats, int new_floats);
     static void reset(); // 程序结束运行时，还原 tradingPool 中数据
 };
@@ -363,6 +364,10 @@ void Trading::deleteId (string const& name, string const& id) {
 
 // public 函数
 
+bool Trading::isEmpty (string const& id) {
+    return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 1;
+}
+
 void Trading::changeFloats (string const& id, double old_price, int old_floats_available, int old_floats, int new_floats) {
     double new_price = old_price * old_floats / new_floats;
     updatePrice(id, new_price);
@@ -426,15 +431,14 @@ void Trading::trading (string const& id) {
     // 买家
     double cost = getCost(buyBid.userName, id);
     int have = getHave(buyBid.userName, id);
-    double new_cost = (cost * have + bid_num * new_price) / (have + bid_num);
+    double new_cost = (cost * have + bid_num * buyBid.price) / (have + bid_num);
     updateHave(buyBid.userName, id, bid_num);
     updateCost (buyBid.userName, id, new_cost);
-    updateAvailable (buyBid.userName, buyCost - bid_num * new_price); // 更新买家可用资金
     // 卖家
     if (sellBid.userName != "") { // 是用户而不是股票
         updateHave(sellBid.userName, id, sellNum - bid_num); // 更新卖家持仓
-        if (sellNum == bid_num) deleteId (sellBid.userName, id);
-        updateAvailable (sellBid.userName, bid_num * new_price); // 更新卖家可用资金
+        if (getHave(sellBid.userName, id) == 0) deleteId (sellBid.userName, id);
+        updateAvailable (sellBid.userName, bid_num * sellBid.price); // 更新卖家可用资金
     }
     else { // 直接从股票中购买
         updateFloats_available(id, -bid_num);
@@ -444,7 +448,6 @@ void Trading::trading (string const& id) {
     // 更新挂牌股数，判断是否要出队
     tradingPool[id].buysInfo.back().num_of_shares -= bid_num;
     tradingPool[id].sellsInfo.back().num_of_shares -= bid_num;
-    sellBid.num_of_shares -= bid_num;
     if (tradingPool[id].buysInfo.back().num_of_shares == 0) tradingPool[id].buysInfo.pop_back();
     if (tradingPool[id].sellsInfo.back().num_of_shares == 0) tradingPool[id].sellsInfo.pop_back();
 }

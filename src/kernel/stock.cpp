@@ -21,7 +21,7 @@ public:
 public: 
     Stock (string const& _id);
     struct Info getInfo();
-    void setInfo(string const&type, string const& newInfo);
+    bool setInfo(string const&type, string const& newInfo);
     void updateInfo();
 };
 
@@ -49,9 +49,12 @@ struct Info Stock::getInfo() {
     return myInfo;
 }
 
-void Stock::setInfo(string const&type, string const& newInfo) {
+bool Stock::setInfo(string const&type, string const& newInfo) {
     getInfo(); // 先从文件中取出最新数据
     if (type == "floats") {
+        if (!Trading::isEmpty(id)) {
+            return false;
+        }
         Trading::changeFloats(id, myInfo.price, myInfo.floats_available, myInfo.floats, atoi(newInfo.data()));
         getInfo(); // 更新数据
         myInfo.floats = atoi(newInfo.data()); // 再更新股数
@@ -66,6 +69,7 @@ void Stock::setInfo(string const&type, string const& newInfo) {
         myInfo.roa = atof(newInfo.data());
     }
     updateInfo();
+    return true;
 }
 
 void Stock::updateInfo() {
