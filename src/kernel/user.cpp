@@ -1,28 +1,7 @@
 #ifndef _USER_H
 #define _USER_H
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <cstdlib>
-#include <vector>
-#include <map>
-#include <unistd.h>
-
-using std::string;
-using std::map;
-using std::fstream;
-using std::ofstream;
-using std::ifstream;
-using std::endl;
-
-#ifdef _WIN32
-#define SLASH "\\"
-#else
-#define SLASH "/"
-#endif
-
-string thispath = getcwd(NULL, 0);
+#include "trading.cpp"
 
 struct Value {
     int numFloats;
@@ -42,7 +21,6 @@ private:
     string myPath;
     struct Account myAccount;
 public: 
-    static string stockPath;
     string name;
 public: 
     User (string const& _name);
@@ -50,11 +28,11 @@ public:
     struct Account getAccount();
 };
 
-string User::stockPath = thispath + SLASH + ".." + SLASH + "data" + SLASH + "Stock";
-
 User::User (string const& _name): name(_name) {
-    myPath = thispath + SLASH + ".." + SLASH + "data" + SLASH + "User" + SLASH + name;
+    myPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "User" + SLASH + name;
     myAccount.asset.clear();
+    myAccount.available = 0; // 最初情况
+    myAccount.total = 0; // 最初情况
 }
 
 string User::search (string const& item, string const& id) {
@@ -77,6 +55,7 @@ string User::search (string const& item, string const& id) {
 }
 
 struct Account User::getAccount () {
+    myAccount.asset.clear();
     fstream file (myPath);
     string line;
     getline(file, line); // password

@@ -14,6 +14,7 @@ bool test (std::string _ans) {
     }
     else if (_ans == "X") {
         system("clear");
+        Trading::reset();
         return false;
     }
     return true;
@@ -29,6 +30,7 @@ void loop() {
 
 int main() {
     system("clear");
+    Trading::init();
     loop();
     return 0;
 }

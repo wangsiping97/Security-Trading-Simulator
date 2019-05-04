@@ -1,27 +1,11 @@
 #ifndef _STOCK_H
 #define _STOCK_H
 
-#include <iostream>
-#include <string>
-#include <fstream>
-#include <cstdlib>
-#include <vector>
-#include <unistd.h>
-
-using std::string;
-using std::fstream;
-using std::ofstream;
-using std::ifstream;
-using std::endl;
-
-#ifdef _WIN32
-#define SLASH "\\"
-#else
-#define SLASH "/"
-#endif
+#include "trading.cpp"
 
 struct Info {
     double price;
+    int floats_available;
     string industry;
     int floats;
     double roa;
@@ -42,8 +26,7 @@ public:
 };
 
 Stock::Stock (string const& _id): id(_id) {
-    string thispath = getcwd(NULL, 0);
-    myPath = thispath + SLASH + ".." + SLASH + "data" + SLASH + "Stock" + SLASH + id;
+    myPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "Stock" + SLASH + id;
 }
 
 struct Info Stock::getInfo() {
@@ -53,6 +36,7 @@ struct Info Stock::getInfo() {
     getline(file, line); // price
     myInfo.price = atof(line.data()); 
     getline(file, line); // floats available
+    myInfo.floats_available = atoi(line.data());
     getline(file, line); // industry
     myInfo.industry = line;
     getline(file, line); // floats
@@ -66,9 +50,11 @@ struct Info Stock::getInfo() {
 }
 
 void Stock::setInfo(string const&type, string const& newInfo) {
+    getInfo(); // 先从文件中取出最新数据
     if (type == "floats") {
-        myInfo.floats = atoi(newInfo.data());
-        // 传给全局函数
+        Trading::changeFloats(id, myInfo.price, myInfo.floats_available, myInfo.floats, atoi(newInfo.data()));
+        getInfo(); // 更新数据
+        myInfo.floats = atoi(newInfo.data()); // 再更新股数
     }
     else if (type == "industry") {
         myInfo.industry = newInfo;
