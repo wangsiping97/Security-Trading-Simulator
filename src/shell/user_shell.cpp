@@ -147,9 +147,10 @@ bool User_Shell::parseCommand(string& command) {
             return true;
         }
         out << endl;
+        out << setw(15) << "Name" << setw(10) << "Shares" << setw(10) << "Price" << endl;
         out << "[BUYS]" << endl;
         vector<struct Buy>::iterator iter;
-        for (iter = Trading::tradingPool[id].buysInfo.begin(); iter != --Trading::tradingPool[id].buysInfo.end(); iter++) {
+        for (iter = --Trading::tradingPool[id].buysInfo.end(); iter != Trading::tradingPool[id].buysInfo.begin(); iter--) {
             out << setw(15) << iter->userName << setw(10) << iter->num_of_shares << setw(10) << iter->price << endl;
         }
         out << endl;
