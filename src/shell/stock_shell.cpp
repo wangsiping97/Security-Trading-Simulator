@@ -102,7 +102,6 @@ bool Stock_Shell::parseCommand(string& command) {
             return true;
         }
         stock->setInfo(cmd, info);
-        // 调用 trading 类的方法
     }
     else if (cmd == "industry") {
         stock->setInfo(cmd, info);

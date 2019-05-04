@@ -1,6 +1,6 @@
 #include "logger.h"
 
-string Logger::path = thispath + SLASH + ".." + SLASH + "data";
+string Logger::path = thisPath + SLASH + ".." + SLASH + "data";
 
 Logger::Logger(string const& _type, string const& _userName): type(_type), userName(_userName) {
     userPath = path + SLASH + type + SLASH + userName;

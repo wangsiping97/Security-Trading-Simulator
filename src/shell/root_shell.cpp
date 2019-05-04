@@ -53,7 +53,7 @@ bool IShell::parseCommand (string& command) {
     }
     cutOut (command);
     if (vcmd.size() == 1 || vcmd.size() > 2) {
-        out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
+        out << "Invalid command.Please refer to our COMMAND LIST below: " << endl;
         showCommand();
         return true;
     }
@@ -84,11 +84,13 @@ bool IShell::parseCommand (string& command) {
             in >> password;
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your username or password." << endl;
+                in.clear();
+                in.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
             }
         }
     }
     else {
-        out << "Invalid command.Please refer to our CommandList below: " << endl;
+        out << "Invalid command.Please refer to our COMMAND LIST below: " << endl;
         showCommand();
     }
     return true;
@@ -154,6 +156,8 @@ bool SShell::parseCommand (string& command) {
             in >> password;
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your SecuCode or password." << endl;
+                in.clear();
+                in.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
             }
         }
     }

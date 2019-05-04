@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <cstdlib>
 #include "../kernel/user.cpp"
 
 using std::string;
@@ -9,6 +10,7 @@ using std::vector;
 using std::istream;
 using std::ostream;
 using std::endl;
+using std::setw;
 
 class User_Shell {
 private: 
@@ -67,7 +69,7 @@ void User_Shell::showCommand () {
 
 void User_Shell::showStockList () {
     out << endl;
-    system(("cd " + user->stockPath + " && ls").c_str());
+    system(("cd " + stockPath + " && ls").c_str());
     out << endl;
 }
 
@@ -112,20 +114,20 @@ bool User_Shell::parseCommand(string& command) {
     if (command == "account") {
         struct Account account = user->getAccount();
         out << endl;
-        out << user->name << "\t" << "金额\t\t" << "持仓\t" << "成本价\t" << "现价\t" << "盈亏(%)" << endl;
+        out << setw(15) << user->name << setw(15) << "Amount" << setw(10) << "Holding" << setw(10) << "Cost" << setw(10) << "Current" << setw(10) << "Yield(%)" << endl;
         if (!account.asset.empty()) {
             map<string, struct Value>::iterator iter;
             for (iter = account.asset.begin(); iter != account.asset.end(); iter++) {
-                out << iter->first << "\t";
-                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price * iter->second.numFloats << "\t";
-                out << iter->second.numFloats << "\t";
-                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.cost << "\t";
-                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price << "\t";
+                out << setw(15) << iter->first << setw(15);
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price * iter->second.numFloats << setw(10);
+                out << iter->second.numFloats << setw(10);
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.cost << setw(10);
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price << setw(10);
                 out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.yeild << endl;
             }
         }
-        out << "可用\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.available << endl;
-        out << "总资产\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.total << endl;
+        out << setw(15) << "Available" << setw(15) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.available << endl;
+        out << setw(15) << "Total asset" << setw(15) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.total << endl;
         out << endl;
         return true;
     }
@@ -156,7 +158,10 @@ bool User_Shell::parseCommand(string& command) {
             out << "Invalid bid price." << endl;
             return true;
         }
-        // 调用 trading 类的方法
+        if (!(Trading::addBuy(user->name, id, numBid, bidPrice))) {
+            out << "可用资金不足！" << endl;
+            return true;
+        }
         out << "Request received!" << endl;
     }
     else if (cmd == "t-") {
@@ -176,7 +181,10 @@ bool User_Shell::parseCommand(string& command) {
             out << "Invalid bid price." << endl;
             return true;
         }
-        // 调用 trading 类的方法
+        if (!(Trading::addSell(user->name, id, numBid, bidPrice))) {
+            out << "持仓不足！" << endl;
+            return true;
+        }
         out << "Request received!" << endl;
     }
     else if (cmd == "select") {
