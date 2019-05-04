@@ -40,17 +40,18 @@ const char User_Shell::HELP[] =
     "t- [SecuCode] [Number of Shares] [price]  short a security\n"
     "account                            see your account status\n"
     "stock                                      show stock list\n"
+    "bid [SecuCode]                               show bid-list\n"
     "select ?                        show 'select' instructions\n"
-    "select ... from [secu-code]              look up secu-info\n"
+    "select ... from [SecuCode]              look up secu-info\n"
     "clear                                         clear screen\n"
     "quit                                               log out\n"
     "----------------------------------------------------------";
 
 const char User_Shell::INSTRUCTION[] = 
     "---------------------- INSTRUCTIONS ----------------------\n"
-    "select * from [secu-code]                 look up all info\n"
-    "select price from [secu-code]                look up price\n"
-    "select price,roa from [secu-code]      look up price & roa\n"
+    "select * from [SecuCode]                  look up all info\n"
+    "select price from [SecuCode]                 look up price\n"
+    "select price,roa from [SecuCode]       look up price & roa\n"
     "...                                                       \n"
     "Items available: price, industry, floats, roa, roa        \n"
     "NOTICE! NO BLANK between items, only ',' is valid         \n"
@@ -74,7 +75,7 @@ void User_Shell::showStockList () {
 }
 
 void User_Shell::wrong () {
-    out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
+    out << "Invalid command.Please refer to our COMMAND LIST below: " << endl;
     showCommand();
 }
 
@@ -123,11 +124,13 @@ bool User_Shell::parseCommand(string& command) {
                 out << iter->second.numFloats << setw(10);
                 out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.cost << setw(10);
                 out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.price << setw(10);
-                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.yeild << endl;
+                out << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->second.yield << endl;
             }
         }
         out << setw(15) << "Available" << setw(15) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.available << endl;
-        out << setw(15) << "Total asset" << setw(15) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.total << endl;
+        out << setw(15) << "Total asset" << setw(15) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << account.total;
+        out << setw(10) << " " << setw(10) << " " << setw(10) << " " << setw(10) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << (account.total / 200000 - 1) * 100;
+        out << endl;
         out << endl;
         return true;
     }
@@ -136,6 +139,28 @@ bool User_Shell::parseCommand(string& command) {
         return true;
     }
     cutOut (command, ' ');
+    if (vcmd.size() == 2 && vcmd[0] == "bid") {
+        string id = vcmd[1];
+        string price = user->search("price", id);
+        if (price == "") {
+            wrongStock (id);
+            return true;
+        }
+        out << endl;
+        out << "[BUYS]" << endl;
+        vector<struct Buy>::iterator iter;
+        for (iter = Trading::tradingPool[id].buysInfo.begin(); iter != --Trading::tradingPool[id].buysInfo.end(); iter++) {
+            out << setw(15) << iter->userName << setw(10) << iter->num_of_shares << setw(10) << iter->price << endl;
+        }
+        out << endl;
+        out << "[SALES]" << endl;
+        vector<struct Sell>::iterator iter2;
+        for (iter2 = Trading::tradingPool[id].sellsInfo.begin(); iter2 != Trading::tradingPool[id].sellsInfo.end(); iter2++) {
+            out << setw(15) << iter2->userName << setw(10) << iter2->num_of_shares << setw(10) << iter2->price << endl;
+        }
+        out << endl;
+        return true;
+    }
     if (vcmd.size() == 1 || vcmd.size() == 2 || vcmd.size() == 3 || vcmd.size() > 4) {
         wrong ();
         return true;
@@ -217,7 +242,6 @@ bool User_Shell::parseCommand(string& command) {
                 vector<string> vitem, vres;
                 vitem.clear(); vres.clear();
                 for (iter = vcmd.begin(); iter != vcmd.end(); iter++) {
-                    std::cout << *iter << std::endl;
                     if (*iter == "price" || *iter == "industry" || *iter == "floats" || *iter == "roa" || *iter == "roa") {
                         vitem.push_back(*iter);
                         vres.push_back(user->search(*iter, id));

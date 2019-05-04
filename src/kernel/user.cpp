@@ -7,7 +7,7 @@ struct Value {
     int numFloats;
     double price;
     double cost;
-    double yeild;
+    double yield;
 };
 
 struct Account {
@@ -68,7 +68,7 @@ struct Account User::getAccount () {
         v.numFloats = atoi(nf.data());
         v.cost = atof(cost.data());
         v.price = atof(search("price", id).data());
-        v.yeild = (v.price / v.cost - 1) * 100;
+        v.yield = (v.price / v.cost - 1) * 100;
         myAccount.asset.insert(std::pair<string, struct Value>(id, v));
         myAccount.total += v.price * v.numFloats;
     }
