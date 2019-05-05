@@ -20,7 +20,7 @@ const char User_Shell::INSTRUCTION[] =
     "select price from [SecuCode]                 look up price\n"
     "select price,roa from [SecuCode]       look up price & roa\n"
     "...                                                       \n"
-    "Items available: price, industry, floats, roa, roa        \n"
+    "Items available: price, industry, floats, roa, roe        \n"
     "NOTICE! NO BLANK between items, only ',' is valid         \n"
     "----------------------------------------------------------";
 
@@ -197,7 +197,7 @@ bool User_Shell::parseCommand(string& command) {
                 vector<string> vitem, vres;
                 vitem.clear(); vres.clear();
                 for (iter = vcmd.begin(); iter != vcmd.end(); iter++) {
-                    if (*iter == "price" || *iter == "industry" || *iter == "floats" || *iter == "roa" || *iter == "roa") {
+                    if (*iter == "price" || *iter == "industry" || *iter == "floats" || *iter == "roa" || *iter == "roe") {
                         vitem.push_back(*iter);
                         vres.push_back(user->search(*iter, id));
                     }
