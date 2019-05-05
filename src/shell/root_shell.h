@@ -4,23 +4,14 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "shell_base.cpp"
 #include "../kernel/logger.cpp"
 
 using std::string;
 using std::vector;
-using std::istream;
-using std::ostream;
 using std::endl;
 
 // Announcement: Shell_Base class and IShell class (for investment environment)
-class Shell_Base {
-protected: 
-    istream& in;
-    ostream& out;
-public: 
-    void clearScreen ();
-    Shell_Base (istream& _in, ostream& _out);
-};
 
 class IShell: public Shell_Base {
 private: 
@@ -53,4 +44,4 @@ public:
     void run ();
 };
 
-#endif
+#endif // root_shell.h

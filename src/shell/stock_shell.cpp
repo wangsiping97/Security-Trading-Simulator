@@ -1,32 +1,4 @@
-#include <sstream>
-#include <string>
-#include <vector>
-#include <iomanip>
-#include "../kernel/stock.cpp"
-
-using std::string;
-using std::vector;
-using std::istream;
-using std::ostream;
-using std::endl;
-
-class Stock_Shell {
-private: 
-    Stock* stock;
-    istream& in;
-    ostream& out;
-    static const char HELP[];
-    vector<string> vcmd;
-private: 
-    void cutOut (string const& input); 
-    bool parseCommand (string& command);
-public: 
-    Stock_Shell (Stock* _stock, istream& _in, ostream& _out);
-    void hello();
-    void showCommand ();
-    void wrong ();
-    void run ();
-}; 
+#include "stock_shell.h"
 
 const char Stock_Shell::HELP[] = 
     "---------------------- COMMAND LIST ----------------------\n"
@@ -41,10 +13,10 @@ const char Stock_Shell::HELP[] =
     "ATTENTION! Only change floats when there is no bid!       \n"
     "----------------------------------------------------------";
 
-Stock_Shell::Stock_Shell (Stock* _stock, istream& _in, ostream& _out): stock(_stock), in(_in), out(_out) {}
+Stock_Shell::Stock_Shell (Stock* _stock, istream& _in, ostream& _out): stock(_stock), Shell_Base(_in, _out) {}
 
 void Stock_Shell::hello() {
-    system("clear");
+    clearScreen();
     out << "Welcome, " << stock->id << "!" << endl;
 }
 
@@ -52,23 +24,11 @@ void Stock_Shell::showCommand () {
     out << HELP << endl;
 }
 
-void Stock_Shell::wrong () {
-    out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
-    showCommand();
-}
-
-void Stock_Shell::cutOut (string const& input) {
-    vcmd.clear();
-    std::istringstream strcin(input);
-    string s;
-    while(strcin >> s) vcmd.push_back(s);
-}
-
 bool Stock_Shell::parseCommand(string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
     if (command == "quit") {
-        system("clear");
+        clearScreen();
         return false;
     }
     if (command == "help") {
@@ -87,10 +47,10 @@ bool Stock_Shell::parseCommand(string& command) {
         return true;
     }
     if (command == "clear") {
-        system("clear");
+        clearScreen();
         return true;
     }
-    cutOut (command);
+    cutOut (command, ' ');
     if (vcmd.size() == 1 || vcmd.size() > 2) {
         wrong ();
         return true;

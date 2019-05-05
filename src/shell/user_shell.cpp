@@ -1,37 +1,4 @@
-#include <sstream>
-#include <string>
-#include <vector>
-#include <iomanip>
-#include <cstdlib>
-#include "../kernel/user.cpp"
-
-using std::string;
-using std::vector;
-using std::istream;
-using std::ostream;
-using std::endl;
-using std::setw;
-
-class User_Shell {
-private: 
-    User* user;
-    istream& in;
-    ostream& out;
-    static const char HELP[];
-    static const char INSTRUCTION[];
-    vector<string> vcmd;
-private: 
-    void cutOut (string const& input, const char flag); 
-    bool parseCommand (string& command);
-    void wrong ();
-    void wrongStock (string const& id);
-    void showStockList();
-public: 
-    User_Shell (User* _user, istream& _in, ostream& _out);
-    void hello();
-    void showCommand ();
-    void run ();
-}; 
+#include "user_shell.h"
 
 const char User_Shell::HELP[] = 
     "---------------------- COMMAND LIST ----------------------\n"
@@ -57,10 +24,10 @@ const char User_Shell::INSTRUCTION[] =
     "NOTICE! NO BLANK between items, only ',' is valid         \n"
     "----------------------------------------------------------";
 
-User_Shell::User_Shell (User* _user, istream& _in, ostream& _out): user(_user), in(_in), out(_out) {}
+User_Shell::User_Shell (User* _user, istream& _in, ostream& _out): user(_user), Shell_Base(_in, _out) {}
 
 void User_Shell::hello() {
-    system("clear");
+    clearScreen();
     out << "Welcome, " << user->name << "!" << endl;
 }
 
@@ -68,35 +35,16 @@ void User_Shell::showCommand () {
     out << HELP << endl;
 }
 
-void User_Shell::showStockList () {
-    out << endl;
-    system(("cd " + stockPath + " && ls").c_str());
-    out << endl;
-}
-
-void User_Shell::wrong () {
-    out << "Invalid command.Please refer to our COMMAND LIST below: " << endl;
-    showCommand();
-}
-
 void User_Shell::wrongStock(string const& id) {
     out << id << " is not in the stock list. Select a stock from below: " << endl;
     showStockList();
-}
-
-void User_Shell::cutOut (string const& input, const char flag) {
-    vcmd.clear();
-    std::istringstream iss(input);
-    string temp;
-    while (getline(iss, temp, flag)) 
-        vcmd.push_back(temp);
 }
 
 bool User_Shell::parseCommand(string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
     if (command == "quit") {
-        system("clear");
+        clearScreen();
         out << "Successfully quitted " << user->name << ". " << endl;
         return false;
     }
@@ -105,7 +53,7 @@ bool User_Shell::parseCommand(string& command) {
         return true;
     }
     if (command == "clear") {
-        system("clear");
+        clearScreen();
         return true;
     }
     if (command == "stock") {
@@ -146,18 +94,21 @@ bool User_Shell::parseCommand(string& command) {
             wrongStock (id);
             return true;
         }
+        struct Bids bids= user->bidList(id);
         out << endl;
-        out << setw(15) << "Name" << setw(10) << "Shares" << setw(10) << "Price" << endl;
-        out << "[BUYS]" << endl;
+        out << setw(15) << "Order" << setw(10) << "Shares" << setw(10) << "Price" << endl;
+        out << "[LONG]" << endl;
         vector<struct Buy>::iterator iter;
-        for (iter = --Trading::tradingPool[id].buysInfo.end(); iter != Trading::tradingPool[id].buysInfo.begin(); iter--) {
-            out << setw(15) << iter->userName << setw(10) << iter->num_of_shares << setw(10) << iter->price << endl;
+        int i = 1;
+        for (iter = --bids.buysInfo.end(); iter != bids.buysInfo.begin(); iter--, i++) {
+            out << setw(15) << i << setw(10) << iter->num_of_shares << setw(10) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter->price << endl;
         }
         out << endl;
-        out << "[SALES]" << endl;
+        out << "[SHORT]" << endl;
         vector<struct Sell>::iterator iter2;
-        for (iter2 = Trading::tradingPool[id].sellsInfo.begin(); iter2 != Trading::tradingPool[id].sellsInfo.end(); iter2++) {
-            out << setw(15) << iter2->userName << setw(10) << iter2->num_of_shares << setw(10) << iter2->price << endl;
+        int j = 1;
+        for (iter2 = bids.sellsInfo.begin(); iter2 != bids.sellsInfo.end(); iter2++, j++) {
+            out << setw(15) << j << setw(10) << iter2->num_of_shares << setw(10) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter2->price << endl;
         }
         out << endl;
         return true;
@@ -184,7 +135,7 @@ bool User_Shell::parseCommand(string& command) {
             out << "Invalid bid price." << endl;
             return true;
         }
-        if (!(Trading::addBuy(user->name, id, numBid, bidPrice))) {
+        if (!(user->addBuy(id, numBid, bidPrice))) {
             out << "可用资金不足！" << endl;
             return true;
         }
@@ -207,7 +158,7 @@ bool User_Shell::parseCommand(string& command) {
             out << "Invalid bid price." << endl;
             return true;
         }
-        if (!(Trading::addSell(user->name, id, numBid, bidPrice))) {
+        if (!(user->addSell(id, numBid, bidPrice))) {
             out << "持仓不足！" << endl;
             return true;
         }
@@ -222,7 +173,10 @@ bool User_Shell::parseCommand(string& command) {
         }
         else {
             string price = user->search("price", id);
-            if (price == "") wrongStock (id);
+            if (price == "") {
+                wrongStock (id);
+                return true;
+            }
             string industry = user->search("industry", id);
             string floats = user->search("floats", id);
             string roa = user->search("roa", id);

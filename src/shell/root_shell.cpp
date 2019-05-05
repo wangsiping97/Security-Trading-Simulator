@@ -1,13 +1,5 @@
 #include "root_shell.h"
 
-// Implementation of members and functions
-// Shell_Base:
-Shell_Base::Shell_Base (istream& _in, ostream& _out): in(_in), out(_out) {}
-
-void Shell_Base::clearScreen() {
-    system("clear");
-}
-
 // IShell
 const char IShell::I_HELP[] = 
     "---------------------- COMMAND LIST ----------------------\n"

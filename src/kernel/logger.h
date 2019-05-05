@@ -1,7 +1,6 @@
 #ifndef _LOGGER_H
 #define _LOGGER_H
 
-#include <iostream>
 #include <string>
 #include <fstream>
 #include <cstdlib>
