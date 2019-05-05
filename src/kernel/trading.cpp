@@ -419,6 +419,7 @@ bool Trading::addSell(string const& name, string const& id, int num, double new_
 }
 
 void Trading::trading (string const& id) {
+    if (tradingPool[id].sellsInfo.empty()) return; // 交易失败
     struct Buy buyBid = tradingPool[id].buysInfo.back(); // 取尾端，最高买价
     struct Sell sellBid = tradingPool[id].sellsInfo.back(); // 取尾端，最低卖价
     double buyCost = buyBid.price * buyBid.num_of_shares; // 原先从买家账户中减掉的可用资金
@@ -431,14 +432,15 @@ void Trading::trading (string const& id) {
     // 买家
     double cost = getCost(buyBid.userName, id);
     int have = getHave(buyBid.userName, id);
-    double new_cost = (cost * have + bid_num * buyBid.price) / (have + bid_num);
+    double new_cost = (cost * have + bid_num * new_price) / (have + bid_num);
     updateHave(buyBid.userName, id, bid_num);
     updateCost (buyBid.userName, id, new_cost);
+    updateAvailable (buyBid.userName, bid_num * buyBid.price - bid_num * new_price); // 更新可用
     // 卖家
     if (sellBid.userName != "") { // 是用户而不是股票
         updateHave(sellBid.userName, id, sellNum - bid_num); // 更新卖家持仓
         if (getHave(sellBid.userName, id) == 0) deleteId (sellBid.userName, id);
-        updateAvailable (sellBid.userName, bid_num * sellBid.price); // 更新卖家可用资金
+        updateAvailable (sellBid.userName, bid_num * new_price); // 更新卖家可用资金
     }
     else { // 直接从股票中购买
         updateFloats_available(id, -bid_num);
