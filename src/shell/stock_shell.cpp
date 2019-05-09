@@ -84,9 +84,8 @@ bool Stock_Shell::parseCommand(string& command) {
 
 void Stock_Shell::run () {
     string command;
-    getline (in, command);
-    while (parseCommand(command)) {
+    do {
         out << "STS-S:~"<< stock->id << "$ ";
         getline (in, command);
-    }
+    } while (parseCommand(command));
 }

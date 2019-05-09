@@ -13,7 +13,7 @@ bool Logger::exist() {
     else return true;
 }
 
-void Logger::reg(string const& _password) {
+void Logger::reg(char _password[]) {
     system(("touch " + userPath).c_str());
     ofstream fout(userPath);
     fout << _password << endl;
@@ -28,7 +28,7 @@ Stock* Logger::getNewStock() {
     return new Stock (userName);
 }
 
-bool Logger::login (string const& password) {
+bool Logger::login (char password[]) {
     fstream file(userPath);
     string line;
     getline(file, line);

@@ -226,9 +226,8 @@ bool User_Shell::parseCommand(string& command) {
 
 void User_Shell::run () {
     string command;
-    getline (in, command);
-    while (parseCommand(command)) {
+    do {
         out << "STS-I:~"<< user->name << "$ ";
         getline (in, command);
-    }
+    } while (parseCommand(command));
 }

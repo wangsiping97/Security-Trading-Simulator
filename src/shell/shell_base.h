@@ -2,6 +2,8 @@
 #define _SHELL_BASE_H
 
 #include <iostream> 
+#include <termios.h>
+#include <unistd.h>  
 #include <sstream>
 #include <vector>
 
@@ -16,12 +18,14 @@ protected:
     istream& in;
     ostream& out;
     vector<string> vcmd;
+    struct termios oldt, newt;
 public: 
     Shell_Base (istream& _in, ostream& _out);
     void clearScreen ();
     void wrong ();
     void showStockList();
     void cutOut (string const& input, const char flag); 
+    void getPassword(char password[]);
 };
 
 #endif // shell_base.h

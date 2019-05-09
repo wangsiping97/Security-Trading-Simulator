@@ -16,7 +16,7 @@ void IShell::showCommand() {
     out << I_HELP << std::endl;
 }
 
-bool IShell::checkPassword (string const& str1, string const& str2) {
+bool IShell::checkPassword (char str1[], char str2[]) {
     if (str1 == str2) return true;
     else {
         out << "Wrong password! Please reset your password." << endl;
@@ -55,12 +55,14 @@ bool IShell::parseCommand (string& command) {
         if (logger.exist()) // 如果已经被注册过，则报错
             out << "\"" << vcmd[1] << "\" " << "has already been registered, please use another name." << endl;
         else { // 如果新用户名合法，则继续设置密码
-            string password, c_password;
+            char password[100], c_password[100];
             do {
                 out << "password: "; 
-                in >> password; // 输入密码
+                getPassword(password); // 输入密码
+                out << endl;
                 out << "confirm password: "; 
-                in >> c_password; // 确认密码
+                getPassword(c_password); // 确认密码
+                out << endl;
             } while (!checkPassword(password, c_password)); // 若前后密码不匹配，则报错并要求再次输入密码
             logger.reg(password); // 注册账户
             logger.login(password); // 自动登录
@@ -72,12 +74,10 @@ bool IShell::parseCommand (string& command) {
             out << "\"" << vcmd[1] << "\" " << "does not exist. Please check your username or use 'reg' to register." << endl;
         else {
             out << "password: ";
-            string password;
-            in >> password;
+            char password[100];
+            getPassword(password);
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your username or password." << endl;
-                in.clear();
-                in.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
             }
         }
     }
@@ -144,12 +144,10 @@ bool SShell::parseCommand (string& command) {
             out << "\"" << vcmd[1] << "\" " << "does not exist. Please check your SecuCode." << endl;
         else {
             out << "password: ";
-            string password;
-            in >> password;
+            char password[100];
+            getPassword(password);
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your SecuCode or password." << endl;
-                in.clear();
-                in.ignore(std::numeric_limits<std::streamsize>::max(),'\n');
             }
         }
     }

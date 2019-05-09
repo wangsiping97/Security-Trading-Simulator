@@ -24,8 +24,8 @@ protected:
 public: 
     Logger (string const& _type, string const& _userName);
     bool exist();
-    void reg(string const& _password);
-    bool login (string const& passward);
+    void reg(char _password[]);
+    bool login (char passward[]);
     User* getNewUser();
     Stock* getNewStock();
 };
