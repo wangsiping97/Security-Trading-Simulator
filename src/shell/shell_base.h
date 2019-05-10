@@ -25,7 +25,7 @@ public:
     void wrong ();
     void showStockList();
     void cutOut (string const& input, const char flag); 
-    void getPassword(char password[]);
+    void getPassword(string &password);
 };
 
 #endif // shell_base.h

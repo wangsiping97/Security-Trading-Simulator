@@ -16,7 +16,7 @@ void IShell::showCommand() {
     out << I_HELP << std::endl;
 }
 
-bool IShell::checkPassword (char str1[], char str2[]) {
+bool IShell::checkPassword (string str1, string str2) {
     if (str1 == str2) return true;
     else {
         out << "Wrong password! Please reset your password." << endl;
@@ -55,7 +55,7 @@ bool IShell::parseCommand (string& command) {
         if (logger.exist()) // 如果已经被注册过，则报错
             out << "\"" << vcmd[1] << "\" " << "has already been registered, please use another name." << endl;
         else { // 如果新用户名合法，则继续设置密码
-            char password[100], c_password[100];
+            string password, c_password;
             do {
                 out << "password: "; 
                 getPassword(password); // 输入密码
@@ -74,10 +74,10 @@ bool IShell::parseCommand (string& command) {
             out << "\"" << vcmd[1] << "\" " << "does not exist. Please check your username or use 'reg' to register." << endl;
         else {
             out << "password: ";
-            char password[100];
+            string password;
             getPassword(password);
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
-                out << "Log-in failed! Please check your username or password." << endl;
+                out << endl << "Log-in failed! Please check your username or password." << endl;
             }
         }
     }
@@ -144,7 +144,7 @@ bool SShell::parseCommand (string& command) {
             out << "\"" << vcmd[1] << "\" " << "does not exist. Please check your SecuCode." << endl;
         else {
             out << "password: ";
-            char password[100];
+            string password;
             getPassword(password);
             if (logger.login(password) == false) { // 若密码错误，则报错，并返回初始状态
                 out << "Log-in failed! Please check your SecuCode or password." << endl;

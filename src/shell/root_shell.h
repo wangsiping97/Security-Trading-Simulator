@@ -20,7 +20,7 @@ private:
     static const char I_HELP[];
     vector<string> vcmd;
 private:
-    bool checkPassword(char str1[], char str2[]);
+    bool checkPassword(string str1, string str2);
     void cutOut (string const& input); 
     bool parseCommand (string& command);
 public: 

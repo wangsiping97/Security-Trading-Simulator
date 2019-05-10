@@ -6,6 +6,16 @@ Logger::Logger(string const& _type, string const& _userName): type(_type), userN
     userPath = path + SLASH + type + SLASH + userName;
 }
 
+string Logger::encrypt(string pass, int key) {
+    char skey[100];
+    sprintf(skey, "%d", key);
+    for (int i = 0, j = 0; pass[j]; j++, i = (i + 1) % 7) {
+        pass[j] += skey[i] - '0';
+        if(pass[j] > 122) pass[j] -= 90;
+    }
+    return pass;
+}
+
 bool Logger::exist() {
     fstream file;
     file.open(userPath);
@@ -13,10 +23,13 @@ bool Logger::exist() {
     else return true;
 }
 
-void Logger::reg(char _password[]) {
+void Logger::reg(string _password) {
+    std::cout << "password is: " << _password << endl;
     system(("touch " + userPath).c_str());
     ofstream fout(userPath);
-    fout << _password << endl;
+    string password = encrypt(_password, KEY);
+    std::cout << "password is: " << password << endl;
+    fout << password << endl;
     fout << 200000 << endl;
 }
 
@@ -28,12 +41,13 @@ Stock* Logger::getNewStock() {
     return new Stock (userName);
 }
 
-bool Logger::login (char password[]) {
+bool Logger::login (string password) {
+    string enpassword = encrypt(password, KEY);
     fstream file(userPath);
     string line;
     getline(file, line);
     file.close();
-    if (line != password) {
+    if (line != enpassword) {
         return false;
     }
     if (type == "User") {

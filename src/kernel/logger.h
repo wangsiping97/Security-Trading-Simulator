@@ -8,6 +8,8 @@
 #include "../shell/user_shell.cpp"
 #include "../shell/stock_shell.cpp"
 
+#define KEY 4962873
+
 using std::string;
 using std::fstream;
 using std::ofstream;
@@ -21,11 +23,12 @@ protected:
     static string path;
     string userName;
     string userPath;
+    string encrypt(string src_pass, int key);
 public: 
     Logger (string const& _type, string const& _userName);
     bool exist();
-    void reg(char _password[]);
-    bool login (char passward[]);
+    void reg(string _password);
+    bool login (string passward);
     User* getNewUser();
     Stock* getNewStock();
 };

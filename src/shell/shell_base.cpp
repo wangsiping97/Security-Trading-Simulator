@@ -28,7 +28,7 @@ void Shell_Base::cutOut (string const& input, const char flag) {
         vcmd.push_back(temp);
 }
 
-void Shell_Base::getPassword(char password[]) {
+void Shell_Base::getPassword(string &password) {
     int i = 0;
     int c;
 
@@ -43,10 +43,7 @@ void Shell_Base::getPassword(char password[]) {
     tcsetattr( STDIN_FILENO, TCSANOW, &newt);
 
     /*reading the password from the console*/
-    while ((c = getchar())!= '\n' && c != EOF && i < 100){
-        password[i++] = c;
-    }
-    password[i] = '\0';
+    getline(std::cin, password);
 
     /*resetting our old STDIN_FILENO*/ 
     tcsetattr( STDIN_FILENO, TCSANOW, &oldt);
