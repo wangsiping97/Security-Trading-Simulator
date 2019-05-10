@@ -223,8 +223,6 @@ void Trading::deleteId (string const& name, string const& id) {
     out.close();
 }
 
-// public 函数
-
 bool Trading::isEmpty (string const& id) {
     readFile(); // 从文件中读取最新 tradingPool
     return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 1;
@@ -326,6 +324,7 @@ void Trading::trading (string const& id) {
 }
 
 void Trading::reset() {
+    if (tradingPool.empty()) return;
     map<string, struct Bids>::iterator iter;
     for (iter = tradingPool.begin(); iter != tradingPool.end(); iter++) {
         vector<struct Buy>::iterator buyIter;
