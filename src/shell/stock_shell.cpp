@@ -11,6 +11,7 @@ const char Stock_Shell::HELP[] =
     "clear                                         clear screen\n"
     "quit                                               log out\n"
     "ATTENTION! Only change floats when there is no bid!       \n"
+    "DO RESTART the system after changing the floats!          \n"
     "----------------------------------------------------------";
 
 Stock_Shell::Stock_Shell (Stock* _stock, istream& _in, ostream& _out): stock(_stock), Shell_Base(_in, _out) {}
@@ -66,6 +67,7 @@ bool Stock_Shell::parseCommand(string& command) {
             out << "DO NOT reset floats when there are bids in the trading pool." << endl;
             return true;
         }
+        out << "Please RESTART the system." << endl;
     }
     else if (cmd == "industry") {
         stock->setInfo(cmd, info);
