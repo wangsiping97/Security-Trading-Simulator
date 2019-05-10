@@ -48,6 +48,7 @@ struct Account User::getAccount () {
 }
 
 struct Bids User::bidList(string const& id) {
+    Trading::readFile();
     return Trading::tradingPool[id];
 }
 

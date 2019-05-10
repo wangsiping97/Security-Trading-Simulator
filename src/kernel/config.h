@@ -29,6 +29,7 @@ using std::map;
 string thisPath = getcwd(NULL, 0);
 string stockPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "Stock";
 string userPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "User";
+string dataPath = thisPath + SLASH + ".." + SLASH + "data";
 
 // 买家投标
 struct Buy {

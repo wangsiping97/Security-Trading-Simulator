@@ -1,6 +1,6 @@
 #pragma once
 #include "trading.h"
-
+#include <iostream>
 map<string, struct Bids> Trading::tradingPool;
 
 void Trading::init() { // 构建 tradingPool
@@ -226,6 +226,7 @@ void Trading::deleteId (string const& name, string const& id) {
 // public 函数
 
 bool Trading::isEmpty (string const& id) {
+    readFile(); // 从文件中读取最新 tradingPool
     return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 1;
 }
 
@@ -249,6 +250,7 @@ void Trading::changeFloats (string const& id, double old_price, int old_floats_a
 }
 
 bool Trading::addBuy (string const& name, string const& id, int num, double cost) {
+    readFile(); // 从文件中读取最新 tradingPool
     double totalCost = num * cost;
     // 查看用户账户，判断可用资金是否充足
     double available = getAvaliable(name);
@@ -265,6 +267,7 @@ bool Trading::addBuy (string const& name, string const& id, int num, double cost
 }
 
 bool Trading::addSell(string const& name, string const& id, int num, double new_price) {
+    readFile(); // 从文件中读取最新 tradingPool
     // 查看持仓是否充足
     int have = getHave(name, id);
     if (have < num) return false;
@@ -280,12 +283,18 @@ bool Trading::addSell(string const& name, string const& id, int num, double new_
 }
 
 void Trading::trading (string const& id) {
-    if (tradingPool[id].sellsInfo.empty()) return; // 交易失败
+    if (tradingPool[id].sellsInfo.empty()) {
+        setFile();
+        return; // 交易失败
+    }
     struct Buy buyBid = tradingPool[id].buysInfo.back(); // 取尾端，最高买价
     struct Sell sellBid = tradingPool[id].sellsInfo.back(); // 取尾端，最低卖价
     double buyCost = buyBid.price * buyBid.num_of_shares; // 原先从买家账户中减掉的可用资金
     int sellNum = sellBid.num_of_shares; // 原先从卖家账户中减掉的持仓
-    if (buyBid.price < sellBid.price) return; // 交易失败
+    if (buyBid.price < sellBid.price) {
+        setFile();
+        return; // 交易失败
+    }
     // 以下交易成功
     double new_price = (buyBid.price + sellBid.price) / 2; // 新股价
     int bid_num = std::min(buyBid.num_of_shares, sellBid.num_of_shares); // 成交股数
@@ -313,6 +322,7 @@ void Trading::trading (string const& id) {
     tradingPool[id].sellsInfo.back().num_of_shares -= bid_num;
     if (tradingPool[id].buysInfo.back().num_of_shares == 0) tradingPool[id].buysInfo.pop_back();
     if (tradingPool[id].sellsInfo.back().num_of_shares == 0) tradingPool[id].sellsInfo.pop_back();
+    setFile(); // 将最新 tradingPool 写入文件
 }
 
 void Trading::reset() {
@@ -328,4 +338,65 @@ void Trading::reset() {
                 updateHave(sellIter->userName, iter->first, sellIter->num_of_shares);
         }
     }
+    tradingPool.clear();
+}
+
+void Trading::setFile() {
+    ofstream out(dataPath + SLASH + "tradingpool");
+    map<string, struct Bids>::iterator iter;
+    for (iter = tradingPool.begin(); iter != tradingPool.end(); iter++) {
+        vector<struct Buy>::iterator iterBuy;
+        for (iterBuy = iter->second.buysInfo.begin(); iterBuy != iter->second.buysInfo.end(); iterBuy++) {
+            if (iterBuy->userName != "")
+                out << iter->first << " Buy " << iterBuy->userName << " " << iterBuy->num_of_shares << " " << iterBuy->price << endl;
+        }
+        vector<struct Sell>::iterator iterSell;
+        for (iterSell = iter->second.sellsInfo.begin(); iterSell != iter->second.sellsInfo.end(); iterSell++) {
+            if (iterSell->userName != "")
+                out << iter->first << " Sell " << iterSell->userName << " " << iterSell->num_of_shares << " " << iterSell->price << endl;
+        }
+    }
+    out.close();
+}
+
+void Trading::readFile() {
+    init();
+    fstream file(dataPath + SLASH + "tradingpool");
+    vector<string> lines;
+    lines.clear();
+    string line;
+    while (getline(file, line)) {
+        lines.push_back(line);
+    }
+    vector<string>::iterator iter;
+    for (iter = lines.begin(); iter != lines.end(); iter++) {
+        vector<string> temp = cutout(*iter);
+        if (temp.size() == 0) return;
+        if (temp[1] == "Buy") {
+            struct Buy buy;
+            buy.userName = temp[2];
+            buy.num_of_shares = atoi(temp[3].c_str());
+            buy.price = atof(temp[4].c_str());
+            tradingPool[temp[0]].buysInfo.push_back(buy);
+            std::push_heap(begin(tradingPool[temp[0]].buysInfo), end(tradingPool[temp[0]].buysInfo), std::greater<struct Buy>());
+        }
+        else {
+            struct Sell sell;
+            sell.userName = temp[2];
+            sell.num_of_shares = atoi(temp[3].c_str());
+            sell.price = atof(temp[4].c_str());
+            tradingPool[temp[0]].sellsInfo.push_back(sell);
+            std::push_heap(std::begin(tradingPool[temp[0]].sellsInfo), std::end(tradingPool[temp[0]].sellsInfo)); 
+        }
+    }
+}
+
+vector<string> Trading::cutout(string const& line) {
+    vector<string> temp;
+    temp.clear();
+    std::istringstream iss(line);
+    string ttemp;
+    while (getline(iss, ttemp, ' ')) 
+        temp.push_back(ttemp);
+    return temp;
 }

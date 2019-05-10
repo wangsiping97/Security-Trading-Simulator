@@ -2,6 +2,7 @@
 #define _TRADING_H
 
 #include <cstdlib>
+#include <sstream>
 #include <algorithm>
 #include "config.cpp"
 
@@ -28,6 +29,9 @@ private:
     static bool addSell (string const& name, string const& id, int num, double cost);
     static bool isEmpty (string const& id);
     static void changeFloats (string const& id, double old_price, int old_floats_available, int old_floats, int new_floats);
+    static void setFile ();
+    static void readFile ();
+    static vector<string> cutout (string const& line);
 private: 
     static map<string, struct Bids> tradingPool;
 public: 

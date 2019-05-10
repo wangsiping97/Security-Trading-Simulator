@@ -8,4 +8,5 @@
 - 支持手动添加股票，具体方法为：
   - 进入 `/data/stock` 目录，新建二进制文件，名称为股票代码（如 `000002`）。
   - 数据结构为：(string) password\n (double)price\n (int)floats_available\n (string)industry\n (int)floats\n (double)roa\n (double)roe\n
+- **5月11日更新：支持多用户在多终端内同时启动多个程序进行操作**
 - 欢迎测试以及汇报 bug : )

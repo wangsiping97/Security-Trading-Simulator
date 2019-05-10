@@ -8,6 +8,8 @@ void Global::init() {
     std::cout << string(3, '\n');
     std::cout << "                            by Siping Wang @ THU                        \n";
     std::cout << string(5, '\n');
+    ofstream out (dataPath + SLASH + "tradingpool");
+    out.close(); // 重置 tradingpool 文件
     Trading::init();
 }
 
