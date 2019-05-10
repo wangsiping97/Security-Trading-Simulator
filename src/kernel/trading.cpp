@@ -1,6 +1,6 @@
 #pragma once
 #include "trading.h"
-#include <iostream>
+
 map<string, struct Bids> Trading::tradingPool;
 
 void Trading::init() { // 构建 tradingPool
