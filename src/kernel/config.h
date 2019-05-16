@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map> 
+#include <ctime>
 
 #ifdef WIN32  
 #include <direct.h>  
@@ -36,6 +37,7 @@ struct Buy {
     double price;
     int num_of_shares;
     string userName;
+    clock_t time;
     Buy() {}
     Buy (double _price, int _num_of_shares);
     Buy (double _price, int _num_of_shares, string _userName);
@@ -49,6 +51,7 @@ struct Sell {
     double price;
     int num_of_shares;
     string userName;
+    clock_t time;
     Sell () {}
     Sell (double _price, int _num_of_shares);
     Sell (double _price, int _num_of_shares, string _userName);

@@ -24,7 +24,7 @@ private:
     static void deleteId (string const& name, string const& id); // 从账户中删除股票
     static void updatePrice (string const& id, double new_price); // 更新股价
     static void updateFloats_available (string const& id, int diff_floats); // 更新 floats_available
-    static void trading (string const& id); // 交易
+    static bool trading (string const& id); // 交易
     static bool addBuy (string const& name, string const& id, int num, double cost);
     static bool addSell (string const& name, string const& id, int num, double cost);
     static bool isEmpty (string const& id);
