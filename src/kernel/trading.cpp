@@ -1,6 +1,6 @@
 #pragma once
 #include "trading.h"
-#include <iostream>
+
 map<string, struct Bids> Trading::tradingPool;
 
 void Trading::init() { // 构建 tradingPool
@@ -352,7 +352,6 @@ void Trading::setFile() {
         vector<struct Buy>::iterator iterBuy;
         for (iterBuy = iter->second.buysInfo.begin(); iterBuy != iter->second.buysInfo.end(); iterBuy++) {
             if (iterBuy->userName != "") {
-                std::cout << iterBuy->price << endl;
                 out << iter->first << " Buy " << iterBuy->userName << " " << iterBuy->num_of_shares << " " << iterBuy->price << " " << iterBuy->time << endl;
             }
         }
@@ -384,7 +383,6 @@ void Trading::readFile() {
             buy.num_of_shares = atoi(temp[3].c_str());
             buy.price = atof(temp[4].c_str());
             buy.time = atoi(temp[5].c_str());
-            std::cout << buy.price << endl;
             tradingPool[temp[0]].buysInfo.push_back(buy);
             std::sort(begin(tradingPool[temp[0]].buysInfo), end(tradingPool[temp[0]].buysInfo));
         }
