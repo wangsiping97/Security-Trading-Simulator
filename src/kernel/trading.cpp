@@ -382,7 +382,7 @@ void Trading::readFile() {
             buy.userName = temp[2];
             buy.num_of_shares = atoi(temp[3].c_str());
             buy.price = atof(temp[4].c_str());
-            buy.time = atoi(temp[5].c_str());
+            buy.time = temp[5];
             tradingPool[temp[0]].buysInfo.push_back(buy);
             std::sort(begin(tradingPool[temp[0]].buysInfo), end(tradingPool[temp[0]].buysInfo));
         }
@@ -391,7 +391,7 @@ void Trading::readFile() {
             sell.userName = temp[2];
             sell.num_of_shares = atoi(temp[3].c_str());
             sell.price = atof(temp[4].c_str());
-            sell.time = atof(temp[5].c_str());
+            sell.time = temp[5];
             tradingPool[temp[0]].sellsInfo.push_back(sell);
             std::sort(std::begin(tradingPool[temp[0]].sellsInfo), std::end(tradingPool[temp[0]].sellsInfo), std::less<struct Sell>()); 
         }

@@ -3,11 +3,11 @@
 // struct Buy
 Buy::Buy (double _price, int _num_of_shares): price(_price), num_of_shares(_num_of_shares) {
     userName = "";
-    time = 0;
+    time = "0";
 }
 
 Buy::Buy (double _price, int _num_of_shares, string _userName): price(_price), num_of_shares(_num_of_shares), userName(_userName) {
-    time = clock();
+    time = getCurrentTime();
 }
 
 bool Buy::operator < (const struct Buy& right) const {
@@ -23,11 +23,11 @@ bool Buy::operator > (const struct Buy& right) const {
 // struct Sell
 Sell::Sell (double _price, int _num_of_shares): price(_price), num_of_shares(_num_of_shares) {
     userName = "";
-    time = 0;
+    time = "0";
 }
 
 Sell::Sell (double _price, int _num_of_shares, string _userName): price(_price), num_of_shares(_num_of_shares), userName(_userName) {
-    time = clock();
+    time = getCurrentTime();
 }
 
 bool Sell::operator > (const struct Sell& right) const {
