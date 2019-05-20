@@ -1,21 +1,16 @@
 #ifndef _CONFIG_H
 #define _CONFIG_H
 
+#include <cstdlib>
 #include <fstream>
 #include <vector>
 #include <string>
 #include <map> 
 #include <ctime>
-
-#ifdef WIN32  
-#include <direct.h>  
-#include <io.h>  
-#else
-#include <unistd.h>
 #include <dirent.h>
-#endif
+#include <unistd.h>
 
-#ifdef _WIN32
+#if defined _WIN32
 #define SLASH "\\"
 #else
 #define SLASH "/"
@@ -42,7 +37,7 @@ string getCurrentTime () {
 
 // 路径
 string thisPath = getcwd(NULL, 0);
-string stockPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "Stock";
+string stockPath = thisPath + SLASH + (string)".." + SLASH + (string)"data" + SLASH + (string)"Stock";
 string userPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "User";
 string dataPath = thisPath + SLASH + ".." + SLASH + "data";
 

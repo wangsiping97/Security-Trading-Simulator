@@ -8,7 +8,7 @@ User::User (string const& _name): name(_name) {
 }
 
 string User::search (string const& item, string const& id) {
-    fstream file(stockPath + SLASH + id);
+    fstream file((stockPath + SLASH + id).c_str());
     if (!file) return "";
     string line;
     getline(file, line); // password
@@ -28,7 +28,7 @@ string User::search (string const& item, string const& id) {
 
 struct Account User::getAccount () {
     myAccount.asset.clear();
-    fstream file (myPath);
+    fstream file (myPath.c_str());
     string line;
     getline(file, line); // password
     getline(file, line); // available

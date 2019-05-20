@@ -2,10 +2,15 @@
 #define _SHELL_BASE_H
 
 #include <iostream> 
-#include <termios.h>
 #include <unistd.h>  
 #include <sstream>
 #include <vector>
+
+#if defined __APPLE__ || defined __linux__
+#include <termios.h>
+#else
+#include <conio.h>
+#endif
 
 using std::istream;
 using std::ostream;
@@ -18,7 +23,6 @@ protected:
     istream& in;
     ostream& out;
     vector<string> vcmd;
-    struct termios oldt, newt;
 public: 
     Shell_Base (istream& _in, ostream& _out);
     void clearScreen ();

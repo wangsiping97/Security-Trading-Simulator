@@ -26,7 +26,7 @@ bool Logger::exist() {
 void Logger::reg(string _password) {
     std::cout << "password is: " << _password << endl;
     system(("touch " + userPath).c_str());
-    ofstream fout(userPath);
+    ofstream fout(userPath.c_str());
     string password = encrypt(_password, KEY);
     std::cout << "password is: " << password << endl;
     fout << password << endl;
@@ -43,7 +43,7 @@ Stock* Logger::getNewStock() {
 
 bool Logger::login (string password) {
     string enpassword = encrypt(password, KEY);
-    fstream file(userPath);
+    fstream file(userPath.c_str());
     string line;
     getline(file, line);
     file.close();

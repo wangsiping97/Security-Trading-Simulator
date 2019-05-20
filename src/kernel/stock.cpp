@@ -5,7 +5,7 @@ Stock::Stock (string const& _id): id(_id) {
 }
 
 struct Info Stock::getInfo() {
-    fstream file(myPath);
+    fstream file(myPath.c_str());
     string line;
     getline(file, line); // password
     getline(file, line); // price
@@ -48,7 +48,7 @@ bool Stock::setInfo(string const&type, string const& newInfo) {
 }
 
 void Stock::updateInfo() {
-    fstream file(myPath);
+    fstream file(myPath.c_str());
     string password;
     getline(file, password);
     string price;
@@ -56,7 +56,7 @@ void Stock::updateInfo() {
     string floats_available;
     getline (file, floats_available);
     file.close();
-    ofstream out(myPath);
+    ofstream out(myPath.c_str());
     out << password << endl;
     out << price << endl;
     out << floats_available << endl;

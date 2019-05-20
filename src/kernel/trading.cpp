@@ -15,7 +15,7 @@ void Trading::init() { // 构建 tradingPool
 }
 
 bool Trading::haveStock (string const& name, string const& id) {
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     string line;
     while (getline(userFile, line)) {
         if (line == id) return true;
@@ -24,7 +24,7 @@ bool Trading::haveStock (string const& name, string const& id) {
 }
 
 double Trading::getAvaliable (string const& name) {
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     string line;
     getline(userFile, line); // password
     getline(userFile, line); // available
@@ -32,7 +32,7 @@ double Trading::getAvaliable (string const& name) {
 }
 
 void Trading::updateAvailable (string const& name, double diff_available) {
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     string line;
     getline(userFile, line); // password
     string password = line; // 暂存 password
@@ -44,7 +44,7 @@ void Trading::updateAvailable (string const& name, double diff_available) {
         temp.push_back(line);
     } // 暂存 available 后所有数据
     userFile.close();
-    ofstream out(userPath + SLASH + name);
+    ofstream out((userPath + SLASH + name).c_str());
     out << password << endl;
     out << new_available << endl;
     int sz = temp.size();
@@ -55,7 +55,7 @@ void Trading::updateAvailable (string const& name, double diff_available) {
 }
 
 int Trading::getHave (string const& name, string const& id) {
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     string line;
     while (getline(userFile, line)) {
         if (line == id) break;
@@ -68,14 +68,14 @@ int Trading::getHave (string const& name, string const& id) {
 
 void Trading::updateHave (string const& name, string const& id, int diff_num) {
     if (!haveStock(name, id)) {
-        ofstream out (userPath + SLASH + name, std::ios::app);
+        ofstream out ((userPath + SLASH + name).c_str(), std::ios::app);
         out << id << endl;
         out << diff_num << endl;
         out << 0 << endl; // 暂时写一个 cost
         out.close();
         return;
     }
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     vector<string> temp;
     temp.clear();
     string line;
@@ -91,7 +91,7 @@ void Trading::updateHave (string const& name, string const& id, int diff_num) {
         temp2.push_back(line);
     } // 暂存后面的内容
     userFile.close();
-    ofstream out(userPath + SLASH + name);
+    ofstream out((userPath + SLASH + name).c_str());
     int sz = temp.size();
     for (int i = 0; i < sz; i++) {
         out << temp[i] << endl;
@@ -106,7 +106,7 @@ void Trading::updateHave (string const& name, string const& id, int diff_num) {
 }
 
 double Trading::getCost (string const& name, string const& id) {
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     string line;
     while (getline(userFile, line)) {
         if (line == id) break;
@@ -121,7 +121,7 @@ double Trading::getCost (string const& name, string const& id) {
 void Trading::updateCost (string const& name, string const& id, double new_cost) {
     if (!haveStock(name, id)) 
         return;
-    fstream userFile(userPath + SLASH + name);
+    fstream userFile((userPath + SLASH + name).c_str());
     vector<string> temp;
     temp.clear();
     string line;
@@ -138,7 +138,7 @@ void Trading::updateCost (string const& name, string const& id, double new_cost)
         temp2.push_back(line);
     } // 暂存后面的内容
     userFile.close();
-    ofstream out(userPath + SLASH + name);
+    ofstream out((userPath + SLASH + name).c_str());
     int sz = temp.size();
     for (int i = 0; i < sz; i++) {
         out << temp[i] << endl;
@@ -152,7 +152,7 @@ void Trading::updateCost (string const& name, string const& id, double new_cost)
 }
 
 void Trading::updatePrice (string const& id, double new_price) {
-    fstream stockFile(stockPath + SLASH + id);
+    fstream stockFile((stockPath + SLASH + id).c_str());
     string line;
     getline(stockFile, line); // password
     string password = line; // 暂存 password
@@ -163,7 +163,7 @@ void Trading::updatePrice (string const& id, double new_price) {
         temp.push_back(line);
     } // 暂存后面的内容
     stockFile.close();
-    ofstream out(stockPath + SLASH + id);
+    ofstream out((stockPath + SLASH + id).c_str());
     out << password << endl;
     out << new_price << endl; // 新股价
     int sz = temp.size();
@@ -174,7 +174,7 @@ void Trading::updatePrice (string const& id, double new_price) {
 }
 
 void Trading::updateFloats_available(string const& id, int diff_floats) {
-    fstream stockFile(stockPath + SLASH + id);
+    fstream stockFile((stockPath + SLASH + id).c_str());
     string line;
     getline(stockFile, line); // password
     string password = line; // 暂存 password
@@ -188,7 +188,7 @@ void Trading::updateFloats_available(string const& id, int diff_floats) {
         temp.push_back(line);
     } // 暂存后面的内容
     stockFile.close();
-    ofstream out(stockPath + SLASH + id);
+    ofstream out((stockPath + SLASH + id).c_str());
     out << password << endl;
     out << price << endl; 
     out << floats + diff_floats << endl;
@@ -201,7 +201,7 @@ void Trading::updateFloats_available(string const& id, int diff_floats) {
 
 void Trading::deleteId (string const& name, string const& id) {
     if (!haveStock(name, id)) return;
-    fstream userFile (userPath + SLASH + name);
+    fstream userFile ((userPath + SLASH + name).c_str());
     vector<string> temp;
     temp.clear();
     string line;
@@ -215,7 +215,7 @@ void Trading::deleteId (string const& name, string const& id) {
         temp.push_back(line);
     }
     userFile.close();
-    ofstream out (userPath + SLASH + name);
+    ofstream out ((userPath + SLASH + name).c_str());
     int sz = temp.size();
     for (int i = 0; i < sz; i++) {
         out << temp[i] << endl;
@@ -346,7 +346,7 @@ void Trading::reset() {
 }
 
 void Trading::setFile() {
-    ofstream out(dataPath + SLASH + "tradingpool");
+    ofstream out((dataPath + SLASH + "tradingpool").c_str());
     map<string, struct Bids>::iterator iter;
     for (iter = tradingPool.begin(); iter != tradingPool.end(); iter++) {
         vector<struct Buy>::iterator iterBuy;
@@ -366,7 +366,7 @@ void Trading::setFile() {
 
 void Trading::readFile() {
     init();
-    fstream file(dataPath + SLASH + "tradingpool");
+    fstream file((dataPath + SLASH + "tradingpool").c_str());
     vector<string> lines;
     lines.clear();
     string line;

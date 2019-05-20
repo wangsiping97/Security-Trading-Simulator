@@ -1,7 +1,6 @@
 #ifndef _TRADING_H
 #define _TRADING_H
 
-#include <cstdlib>
 #include <sstream>
 #include <algorithm>
 #include "config.cpp"

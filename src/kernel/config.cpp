@@ -44,7 +44,7 @@ bool Sell::operator < (const struct Sell& right) const {
 Bids::Bids (string _id): id(_id) {
     buysInfo.clear();
     sellsInfo.clear();
-    fstream file (stockPath + SLASH + id);
+    fstream file ((stockPath + SLASH + id).c_str());
     string line;
     getline(file, line); // password
     getline(file, line); // price
@@ -53,9 +53,9 @@ Bids::Bids (string _id): id(_id) {
     int floats = atoi(line.data());
     struct Sell initSell(openPrice, floats);
     sellsInfo.push_back(initSell);
-    std::sort(std::begin(sellsInfo), std::end(sellsInfo), std::less<struct Sell>()); // 卖堆，降序
+    std::sort(sellsInfo.begin(), sellsInfo.end(), std::less<struct Sell>()); // 卖堆，降序
     struct Buy initBuy(-1, -1);
     buysInfo.push_back(initBuy);
-    std::sort(begin(buysInfo), end(buysInfo)); // 买堆，默认升序
+    std::sort(buysInfo.begin(), buysInfo.end()); // 买堆，默认升序
     file.close();
 }
