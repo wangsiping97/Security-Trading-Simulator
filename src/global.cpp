@@ -12,8 +12,6 @@ void Global::init() {
     std::cout << string(3, '\n');
     std::cout << "                            by Siping Wang @ THU                        \n";
     std::cout << string(5, '\n');
-    ofstream out ((dataPath + SLASH + "tradingpool").c_str());
-    out.close(); // 重置 tradingpool 文件
     Trading::init();
 }
 
@@ -45,6 +43,8 @@ bool Global::test (string const& _ans) {
         system("clear");
         #endif
         Trading::reset();
+        ofstream out ((dataPath + SLASH + "tradingpool").c_str());
+        out.close(); // 重置 tradingpool 文件
         return false;
     }
     return true;
