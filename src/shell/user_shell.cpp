@@ -168,7 +168,7 @@ bool User_Shell::parseCommand(string& command) {
         string id = vcmd[3];
         string from = vcmd[2];
         if (from != "from") {
-            out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
+            out << "Invalid command.Please refer to our INSTRUCTIONS below: " << endl;
             out << INSTRUCTION << endl;
         }
         else {

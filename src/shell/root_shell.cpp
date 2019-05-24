@@ -82,7 +82,7 @@ bool IShell::parseCommand (string& command) {
         }
     }
     else {
-        out << "Invalid command.Please refer to our COMMAND LIST below: " << endl;
+        out << "Invalid command. Please refer to our COMMANDLIST below: " << endl;
         showCommand();
     }
     return true;
