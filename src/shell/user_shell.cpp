@@ -107,7 +107,7 @@ bool User_Shell::parseCommand(string& command) {
         out << "[SHORT]" << endl;
         vector<struct Sell>::iterator iter2;
         int j = 1;
-        for (iter2 = bids.sellsInfo.begin(); iter2 != bids.sellsInfo.end(); iter2++, j++) {
+        for (iter2 = bids.sellsInfo.begin(); iter2 != --bids.sellsInfo.end(); iter2++, j++) {
             out << setw(15) << j << setw(10) << iter2->num_of_shares << setw(10) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << iter2->price << endl;
         }
         out << endl;

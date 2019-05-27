@@ -16,6 +16,8 @@
 #define SLASH "/"
 #endif
 
+#define MAX_PRICE 100000000
+
 using std::fstream;
 using std::vector;
 using std::string;

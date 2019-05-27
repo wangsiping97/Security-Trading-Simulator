@@ -51,7 +51,12 @@ Bids::Bids (string _id): id(_id) {
     double openPrice = atof(line.data());
     getline(file, line); // floats_available
     int floats = atoi(line.data());
-    struct Sell initSell(openPrice, floats);
+    if (floats != 0) {
+        std::cout << "add stockSell" << std::endl;
+        struct Sell stockSell(openPrice, floats);
+        sellsInfo.push_back(stockSell);
+    }
+    struct Sell initSell(MAX_PRICE, 0);
     sellsInfo.push_back(initSell);
     std::sort(sellsInfo.begin(), sellsInfo.end(), std::less<struct Sell>()); // 卖堆，降序
     struct Buy initBuy(-1, -1);
