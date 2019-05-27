@@ -1,5 +1,19 @@
 #include "config.h"
 
+// 时间
+string getCurrentTime () {
+    time_t timer;
+    time(&timer);
+    tm* t_tm = localtime(&timer);
+    string year = std::to_string(t_tm->tm_year + 1900);
+    string month = std::to_string(t_tm->tm_mon + 1).length() == 1 ? "0" + std::to_string(t_tm->tm_mon + 1) : std::to_string(t_tm->tm_mon + 1);
+    string day = std::to_string(t_tm->tm_mday).length() == 1 ? "0" + std::to_string(t_tm->tm_mday) : std::to_string(t_tm->tm_mday);
+    string hour = std::to_string(t_tm->tm_hour).length() == 1 ? "0" + std::to_string(t_tm->tm_hour) : std::to_string(t_tm->tm_hour);
+    string min = std::to_string(t_tm->tm_min).length() == 1 ? "0" + std::to_string(t_tm->tm_min) : std::to_string(t_tm->tm_min);
+    string sec = std::to_string(t_tm->tm_sec).length() == 1 ? "0" + std::to_string(t_tm->tm_sec) : std::to_string(t_tm->tm_sec);
+    return year + month + day + hour + min + sec;
+}
+
 // struct Buy
 Buy::Buy (double _price, int _num_of_shares): price(_price), num_of_shares(_num_of_shares) {
     userName = "";
@@ -52,7 +66,6 @@ Bids::Bids (string _id): id(_id) {
     getline(file, line); // floats_available
     int floats = atoi(line.data());
     if (floats != 0) {
-        std::cout << "add stockSell" << std::endl;
         struct Sell stockSell(openPrice, floats);
         sellsInfo.push_back(stockSell);
     }
