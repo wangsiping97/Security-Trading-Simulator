@@ -1,6 +1,6 @@
-#include "global.h"
+#include "sts.h"
 
-void Global::init() {
+void STS::init() {
     #if defined _WIN32  
     system("cls");
     #else
@@ -15,7 +15,7 @@ void Global::init() {
     Trading::init();
 }
 
-bool Global::test (string const& _ans) {
+bool STS::test (string const& _ans) {
     if (_ans == "I") {
         #if defined _WIN32  
         system("cls");
@@ -50,7 +50,7 @@ bool Global::test (string const& _ans) {
     return true;
 }
 
-void Global::run() {
+void STS::run() {
     string ans;
     do {
         std::cout << "Welcome to STS! Are you an investor (I) or a security manager (S)? \nI/S? ";

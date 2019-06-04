@@ -1,7 +1,7 @@
-#include "../src/global.cpp"
+#include "../src/sts.cpp"
 
 int main(int argc, char** argv) {
-    Global::init();
-    Global::run();
+    STS::init();
+    STS::run();
     return 0;
 }

@@ -1,9 +1,9 @@
-#ifndef _GLOBAL_H
-#define _GLOBAL_H
+#ifndef _STS_H
+#define _STS_H
 
 #include "shell/root_shell.cpp"
 
-class Global {
+class STS {
 private: 
     static bool test(string const& _ans);
 public:
@@ -11,4 +11,4 @@ public:
     static void run();
 };
 
-#endif // global.h
+#endif // sts.h
