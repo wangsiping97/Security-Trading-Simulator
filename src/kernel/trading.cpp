@@ -225,7 +225,17 @@ void Trading::deleteId (string const& name, string const& id) {
 
 bool Trading::isEmpty (string const& id) {
     readFile(); // 从文件中读取最新 tradingPool
-    return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 1;
+    fstream stockFile((stockPath + SLASH + id).c_str());
+    string line;
+    getline(stockFile, line); // password
+    getline(stockFile, line); // price
+    getline(stockFile, line); // floats_available
+    int floats = atoi(line.data());
+    stockFile.close();
+    if (floats == 0)
+        return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 1;
+    else
+        return tradingPool[id].buysInfo.size() == 1 && tradingPool[id].sellsInfo.size() == 2;
 }
 
 void Trading::changeFloats (string const& id, double old_price, int old_floats_available, int old_floats, int new_floats) {
