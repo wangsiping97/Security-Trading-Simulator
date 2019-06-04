@@ -4,6 +4,7 @@
 #include <iostream> 
 #include <unistd.h>  
 #include <sstream>
+#include <string>
 #include <vector>
 
 #if defined __APPLE__ || defined __linux__
@@ -29,7 +30,7 @@ public:
     void wrong ();
     void showStockList();
     void cutOut (string const& input, const char flag); 
-    void getPassword(string &password);
+    void getPassword (string &password);
 };
 
 #endif // shell_base.h

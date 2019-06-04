@@ -24,13 +24,6 @@ bool IShell::checkPassword (string str1, string str2) {
     }
 }
 
-void IShell::cutOut (string const& input) {
-    vcmd.clear();
-    std::istringstream strcin(input);
-    string s;
-    while(strcin >> s) vcmd.push_back(s);
-}
-
 bool IShell::parseCommand (string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
@@ -43,7 +36,7 @@ bool IShell::parseCommand (string& command) {
         clearScreen();
         return true;
     }
-    cutOut (command);
+    cutOut (command, ' ');
     if (vcmd.size() == 1 || vcmd.size() > 2) {
         out << "Invalid command.Please refer to our COMMAND LIST below: " << endl;
         showCommand();
@@ -112,13 +105,6 @@ void SShell::showCommand () {
     out << S_HELP << std::endl;
 }
 
-void SShell::cutOut (string const& input) {
-    vcmd.clear();
-    std::istringstream strcin(input);
-    string s;
-    while(strcin >> s) vcmd.push_back(s);
-}
-
 bool SShell::parseCommand (string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
@@ -131,7 +117,7 @@ bool SShell::parseCommand (string& command) {
         clearScreen();
         return true;
     }
-    cutOut(command);
+    cutOut(command, ' ');
     if (vcmd.size() == 1 || vcmd.size() > 2) {
         out << "Invalid command.Please refer to our COMMANDLIST below: " << endl;
         showCommand();

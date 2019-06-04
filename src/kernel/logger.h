@@ -19,7 +19,6 @@ using std::endl;
 class Logger {
 private: 
     string type;
-protected: 
     static string path;
     string userName;
     string userPath;
@@ -28,7 +27,7 @@ public:
     Logger (string const& _type, string const& _userName);
     bool exist();
     void reg(string _password);
-    bool login (string passward);
+    bool login (string _passward);
     User* getNewUser();
     Stock* getNewStock();
 };

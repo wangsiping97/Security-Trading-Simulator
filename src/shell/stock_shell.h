@@ -5,7 +5,7 @@
 #include "shell_base.cpp"
 #include "../kernel/stock.cpp"
 
-class Stock_Shell: private Shell_Base {
+class Stock_Shell: public Shell_Base {
 private: 
     Stock* stock;
     static const char HELP[];
