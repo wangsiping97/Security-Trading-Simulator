@@ -25,7 +25,7 @@ using std::map;
 
 // 路径
 string thisPath = getcwd(NULL, 0);
-string stockPath = thisPath + SLASH + (string)".." + SLASH + (string)"data" + SLASH + (string)"Stock";
+string stockPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "Stock";
 string userPath = thisPath + SLASH + ".." + SLASH + "data" + SLASH + "User";
 string dataPath = thisPath + SLASH + ".." + SLASH + "data";
 

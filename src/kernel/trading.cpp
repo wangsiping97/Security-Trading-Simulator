@@ -357,6 +357,10 @@ void Trading::reset() {
 
 void Trading::setFile() {
     ofstream out((dataPath + SLASH + "tradingpool").c_str());
+    if (tradingPool.empty()) {
+        out.close();
+        return;
+    }
     map<string, struct Bids>::iterator iter;
     for (iter = tradingPool.begin(); iter != tradingPool.end(); iter++) {
         vector<struct Buy>::iterator iterBuy;
