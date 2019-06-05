@@ -7,7 +7,7 @@
 
 using std::setw;
 
-class User_Shell: private Shell_Base {
+class User_Shell: public Shell_Base {
 private: 
     User* user;
     static const char HELP[];

@@ -21,7 +21,12 @@ void Shell_Base::wrong () {
 void Shell_Base::showStockList () {
     out << endl;
     #if defined _WIN32
-    system(("cd" + stockPath + "&& dir").c_str());
+    DIR* dir = opendir(stockPath.data());
+    struct dirent *pid;
+    while ((pid = readdir(dir)) != NULL) {
+        if (pid->d_name[0] == '.') continue;
+        out << pid->d_name << endl;
+    }
     #else
     system(("cd " + stockPath + " && ls").c_str());
     #endif
