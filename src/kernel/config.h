@@ -74,7 +74,7 @@ struct Value {
 };
 
 struct Account {
-    map<string, struct Value> asset; // id, 持股数
+    map<string, struct Value> asset; // id, 持股信息
     double available; // 可用
     double total; // 总资产
 };
