@@ -23,7 +23,7 @@ bool Trading::haveStock (string const& name, string const& id) {
     return false;
 }
 
-double Trading::getAvaliable (string const& name) {
+double Trading::getAvailable (string const& name) {
     fstream userFile((userPath + SLASH + name).c_str());
     string line;
     getline(userFile, line); // password
@@ -261,7 +261,7 @@ bool Trading::addBuy (string const& name, string const& id, int num, double cost
     readFile(); // 从文件中读取最新 tradingPool
     double totalCost = num * cost;
     // 查看用户账户，判断可用资金是否充足
-    double available = getAvaliable(name);
+    double available = getAvailable(name);
     if (totalCost > available) return false;
     // 以下能够交易 / 入队
     // 可用资金减少
