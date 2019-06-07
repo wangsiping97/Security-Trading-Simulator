@@ -29,7 +29,6 @@ public:
     Shell_Base (istream& _in, ostream& _out);
     void clearScreen ();
     void wrong ();
-    void showStockList();
     void getPassword (string &password);
 };
 

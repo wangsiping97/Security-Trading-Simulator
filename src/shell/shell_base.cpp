@@ -18,21 +18,6 @@ void Shell_Base::wrong () {
     out << "Invalid command.Please use \"help\" to see our COMMAND LIST. " << endl;
 }
 
-void Shell_Base::showStockList () {
-    out << endl;
-    #if defined _WIN32
-    DIR* dir = opendir(stockPath.data());
-    struct dirent *pid;
-    while ((pid = readdir(dir)) != NULL) {
-        if (pid->d_name[0] == '.') continue;
-        out << pid->d_name << endl;
-    }
-    #else
-    system(("cd " + stockPath + " && ls").c_str());
-    #endif
-    out << endl;
-}
-
 void Shell_Base::cutOut (string const& input, const char flag) {
     vcmd.clear();
     std::istringstream iss(input);

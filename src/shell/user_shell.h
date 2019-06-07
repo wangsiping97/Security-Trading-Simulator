@@ -19,6 +19,7 @@ public:
     User_Shell (User* _user, istream& _in, ostream& _out);
     void hello();
     void showCommand ();
+    void showStockList();
     void run ();
 }; 
 

@@ -35,6 +35,21 @@ void User_Shell::showCommand () {
     out << HELP << endl;
 }
 
+void User_Shell::showStockList () {
+    out << endl;
+    #if defined _WIN32
+    DIR* dir = opendir(stockPath.data());
+    struct dirent *pid;
+    while ((pid = readdir(dir)) != NULL) {
+        if (pid->d_name[0] == '.') continue;
+        out << pid->d_name << endl;
+    }
+    #else
+    system(("cd " + stockPath + " && ls").c_str());
+    #endif
+    out << endl;
+}
+
 void User_Shell::wrongStock(string const& id) {
     out << id << " is not in the stock list. Select a stock from below: " << endl;
     showStockList();
