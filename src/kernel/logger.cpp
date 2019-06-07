@@ -24,11 +24,9 @@ bool Logger::exist() {
 }
 
 void Logger::reg(string _password) {
-    std::cout << "password is: " << _password << endl;
     system(("touch " + userPath).c_str());
     ofstream fout(userPath.c_str());
     string password = encrypt(_password, KEY);
-    std::cout << "password is: " << password << endl;
     fout << password << endl;
     fout << 200000 << endl;
 }

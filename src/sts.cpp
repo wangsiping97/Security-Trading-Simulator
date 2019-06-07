@@ -45,6 +45,7 @@ bool STS::test (string const& _ans) {
         Trading::reset();
         ofstream out ((dataPath + SLASH + "tradingpool").c_str());
         out.close(); // 重置 tradingpool 文件
+        std::cout << "Successfully updated data. Bye~" << std::endl;
         return false;
     }
     return true;

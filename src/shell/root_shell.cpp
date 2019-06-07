@@ -27,7 +27,10 @@ bool IShell::checkPassword (string str1, string str2) {
 bool IShell::parseCommand (string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
-    if (command == "reset") return false; // 退出投资者环境
+    if (command == "reset") {
+        out << "Successfully quitted investor environment." << endl;
+        return false; // 退出投资者环境
+    }
     if (command == "help") {
         showCommand(); // 查看 COMMAND LLIST
         return true;
@@ -108,7 +111,10 @@ void SShell::showCommand () {
 bool SShell::parseCommand (string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
-    if (command == "reset") return false; // 退出证券环境
+    if (command == "reset") {
+        out << "Successfully quitted security environment." << endl;
+        return false; // 退出证券环境
+    }
     if (command == "help") {
         showCommand(); // 查看 COMMAND LLIST
         return true;
