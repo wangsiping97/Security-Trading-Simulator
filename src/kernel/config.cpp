@@ -71,7 +71,7 @@ Bids::Bids (string _id): id(_id) {
     }
     struct Sell initSell(MAX_PRICE, 0);
     sellsInfo.push_back(initSell);
-    std::sort(sellsInfo.begin(), sellsInfo.end(), std::less<struct Sell>()); // 卖堆，降序
+    std::sort(sellsInfo.begin(), sellsInfo.end(), std::greater<struct Sell>()); // 卖堆，降序
     struct Buy initBuy(-1, -1);
     buysInfo.push_back(initBuy);
     std::sort(buysInfo.begin(), buysInfo.end()); // 买堆，默认升序
