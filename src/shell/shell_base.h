@@ -24,12 +24,12 @@ protected:
     istream& in;
     ostream& out;
     vector<string> vcmd;
+    void cutOut (string const& input, const char flag); 
 public: 
     Shell_Base (istream& _in, ostream& _out);
     void clearScreen ();
     void wrong ();
     void showStockList();
-    void cutOut (string const& input, const char flag); 
     void getPassword (string &password);
 };
 

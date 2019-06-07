@@ -40,6 +40,28 @@ void User_Shell::wrongStock(string const& id) {
     showStockList();
 }
 
+bool User_Shell::match(string const& a, string const& b) { // 模糊匹配
+    int f[21][21],i,j,n,m;
+    for (i = 0; i < 20; ++i) {
+        for (j = 0; j < 20; ++j) 
+            f[i][j] = 31; // 初始化，将所有的成本都赋值为一个很大的数
+    }
+    f[0][0] = 0;
+    n = a.length();
+    m = b.length();
+    for (i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (i < n && j < m) { // a[i + 1] 和 b[j + 1] 匹配
+                if (a[i] == b[j]) f[i + 1][j + 1] = std::min(f[i + 1][j + 1], f[i][j]); // 不需要任何修改
+                else f[i + 1][j + 1] = std::min(f[i + 1][j + 1], f[i][j] + 1); // 需要修改，强行匹配
+            }
+            if (i < n) f[i + 1][j] = std::min(f[i + 1][j], f[i][j] + 1); // 删掉 a[i]
+            if (j < m) f[i][j + 1] = std::min(f[i][j + 1], f[i][j] + 1); // 删掉 b[j] 
+        }
+    }
+    return f[n][m] <= 3;
+}
+
 bool User_Shell::parseCommand(string& command) {
     command.erase(command.find_last_not_of(" ") + 1); // 去掉尾端多余空格
     if (command == "") return true;
@@ -197,7 +219,7 @@ bool User_Shell::parseCommand(string& command) {
                 vector<string> vitem, vres;
                 vitem.clear(); vres.clear();
                 for (iter = vcmd.begin(); iter != vcmd.end(); iter++) {
-                    if (*iter == "price" || *iter == "industry" || *iter == "floats" || *iter == "roa" || *iter == "roe") {
+                    if (match(*iter, "price") || match(*iter, "industry") || match(*iter, "floats") || *iter == "roa" || *iter == "roe") {
                         vitem.push_back(*iter);
                         vres.push_back(user->search(*iter, id));
                     }
@@ -207,12 +229,12 @@ bool User_Shell::parseCommand(string& command) {
                     }
                 }
                 out << endl;
-                out << "SecuCode\t" <<  id << endl;
+                out << "SecuCode\t" << id << endl;
                 int s = vitem.size();
                 for (int i = 0; i < s; i++) {
-                    if (vitem[i] == "price") out << "Price\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(price.data()) << endl;
-                    else if (vitem[i] == "industry") out << "Industry\t" << industry << endl;
-                    else if (vitem[i] == "floats") out << "Floats\t\t" << floats << endl;
+                    if (match(vitem[i], "price")) out << "Price\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(price.data()) << endl;
+                    else if (match(vitem[i], "industry")) out << "Industry\t" << industry << endl;
+                    else if (match(vitem[i], "floats")) out << "Floats\t\t" << floats << endl;
                     else if (vitem[i] == "roa") out << "ROA(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(roa.data()) << endl;
                     else out << "ROE(%)\t\t" << std::setiosflags(std::ios::fixed)<<std::setprecision(2)<< atof(roe.data()) << endl;
                 }

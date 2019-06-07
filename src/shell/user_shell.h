@@ -12,9 +12,9 @@ private:
     User* user;
     static const char HELP[];
     static const char INSTRUCTION[];
-private: 
     bool parseCommand (string& command);
     void wrongStock (string const& id);
+    bool match(string const& a, string const& b);
 public: 
     User_Shell (User* _user, istream& _in, ostream& _out);
     void hello();
