@@ -74,7 +74,7 @@ bool User_Shell::match(string const& a, string const& b) { // 模糊匹配
             if (j < m) f[i][j + 1] = std::min(f[i][j + 1], f[i][j] + 1); // 删掉 b[j] 
         }
     }
-    return f[n][m] <= 3;
+    return f[n][m] <= 2;
 }
 
 bool User_Shell::parseCommand(string& command) {
