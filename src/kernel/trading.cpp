@@ -270,7 +270,9 @@ bool Trading::addBuy (string const& name, string const& id, int num, double cost
     struct Buy bid(cost, num, name);
     tradingPool[id].buysInfo.push_back(bid); 
     std::sort(begin(tradingPool[id].buysInfo), end(tradingPool[id].buysInfo)); // 排队
-    while (trading(id));
+    while (trading(id)) {
+        trading(id);
+    }
     return true;
 }
 
@@ -286,7 +288,9 @@ bool Trading::addSell(string const& name, string const& id, int num, double new_
     struct Sell bid (new_price, num, name);
     tradingPool[id].sellsInfo.push_back(bid); 
     std::sort(std::begin(tradingPool[id].sellsInfo), std::end(tradingPool[id].sellsInfo), std::less<struct Sell>()); // 排队
-    while(trading(id));
+    while(trading(id)) {
+        trading(id);
+    }
     return true;
 }
 
