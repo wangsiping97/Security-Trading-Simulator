@@ -1,4 +1,4 @@
-#include "../src/sts.cpp"
+#include "sts.cpp"
 
 int main(int argc, char** argv) {
     STS::init();

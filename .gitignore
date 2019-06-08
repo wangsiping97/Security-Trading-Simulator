@@ -2,4 +2,5 @@
 *.pdf
 /data/User/*
 !/data/User/__init__
-/.vscode
+*.vscode
+*.DS_Store
