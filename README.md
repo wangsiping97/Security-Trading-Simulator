@@ -1,13 +1,15 @@
 # Security Trading Simulator
-## 测试版本
-- 目前仅支持 `OS X` 系统。
-- 进入可执行文件所在目录(/bin)，然后在终端下输入`./main`即可。
-- 结束程序时（模拟每日交易结束时），需退回最初状态，在 I/S 问题后输入 `X`，将会更新数据并退出。
-- 注意！**千万不要手动关闭终端**，未成交的投标将无法回到账户，您的收益率将受损严重。
-- 目前股票池中有两只股票，代码为 `000001`，`000002`。可根据程序提示信息进行读写操作。(两只股票账户密码均为`123456`)
-- 支持手动添加股票，具体方法为：
-  - 进入 `/data/Stock` 目录，新建文件，名称为股票代码（如 `000003`）。
-  - 数据结构为：(string) password\n (double)price\n (int)floats_available\n (string)industry\n (int)floats\n (double)roa\n (double)roe\n
-- **5月11日更新：支持多用户在多终端内启动多个程序进行操作。** 注意：本功能仅为演示方便而设，一旦程序在一个终端中结束运行，则其他终端必须结束运行，不可再进行其他操作。
-- 5月18日更新：改进时间设置，多终端操作**不需要同时**运行程序。
-- 欢迎测试以及汇报 bug : )
+一个跨平台的证券交易系统模拟器。
+
+![MAC](https://github.com/wangsiping97/Security-Trading-Simulator/blob/master/doc/6.png?raw=true)
+
+![WINDOWS](https://github.com/wangsiping97/Security-Trading-Simulator/blob/master/doc/7.png?raw=true)
+
+![LINUX](https://github.com/wangsiping97/Security-Trading-Simulator/blob/master/doc/8.png?raw=true)
+
+## 目录说明
+
+- `bin` 中存放各平台下的执行文件。
+- `data` 中存放用户账户文件和股票信息文件。
+- `doc` 中存放各种文档。
+- `src` 为源代码目录。
