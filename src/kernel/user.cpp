@@ -54,7 +54,7 @@ struct Account User::getAccount () {
         vector<struct Sell>::iterator iterSell;
         for (iterSell = iter->second.sellsInfo.begin(); iterSell != iter->second.sellsInfo.end(); iterSell++) {
             if (iterSell->userName == name)
-                myAccount.total += iterSell->price * iterSell->num_of_shares;
+                myAccount.total += myAccount.asset[iter->first].price * iterSell->num_of_shares;
         }
     }
     return myAccount;

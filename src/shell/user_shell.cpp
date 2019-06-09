@@ -135,15 +135,13 @@ bool User_Shell::parseCommand(string& command) {
         out << endl;
         out << setw(15) << "Order" << setw(10) << "Shares" << setw(10) << "Price" << endl;
         out << "[LONG]" << endl;
-        vector<struct Buy>::iterator iter;
-        for (int i = 1; i < (int)bids.buysInfo.size(); i++) {
-            out << setw(15) << i << setw(10) << bids.buysInfo[i].num_of_shares << setw(10) << std::setiosflags(std::ios::fixed) << std::setprecision(2) << bids.buysInfo[i].price <<endl;
+        for (int i = (int)bids.buysInfo.size() - 1; i >= 1; i--){
+            out << setw(15) << (int)bids.buysInfo.size() - i << setw(10) << bids.buysInfo[i].num_of_shares << setw(10) << std::setiosflags(std::ios::fixed) << std::setprecision(2) << bids.buysInfo[i].price <<endl;
         }
         out << endl;
         out << "[SHORT]" << endl;
-        vector<struct Sell>::iterator iter2;
-        for (int j = 1; j < (int)bids.sellsInfo.size(); j++) {
-            out << setw(15) << j << setw(10) << bids.sellsInfo[j].num_of_shares << setw(10) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << bids.sellsInfo[j].price << endl;
+        for (int j = (int)bids.sellsInfo.size() - 1; j >= 1; j--){
+            out << setw(15) << (int)bids.sellsInfo.size() - j << setw(10) << bids.sellsInfo[j].num_of_shares << setw(10) << std::setiosflags(std::ios::fixed)<<std::setprecision(2) << bids.sellsInfo[j].price << endl;
         }
         out << endl;
         return true;
