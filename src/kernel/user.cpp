@@ -44,6 +44,7 @@ struct Account User::getAccount () {
         myAccount.asset.insert(std::pair<string, struct Value>(id, v));
         myAccount.total += v.price * v.numFloats;
     }
+    Trading::readFile();
     map<string, struct Bids>::iterator iter;
     for (iter = Trading::tradingPool.begin(); iter != Trading::tradingPool.end(); iter++) {
         vector<struct Buy>::iterator iterBuy;

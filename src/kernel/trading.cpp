@@ -200,7 +200,16 @@ void Trading::updateFloats_available(string const& id, int diff_floats) {
 }
 
 void Trading::deleteId (string const& name, string const& id) {
-    if (!haveStock(name, id)) return;
+    readFile();
+    vector<Sell>::iterator iter;
+    int test = 0;
+    for (iter = tradingPool[id].sellsInfo.begin(); iter != tradingPool[id].sellsInfo.end(); iter++) {
+        if (iter->userName == name) {
+            test = 1;
+            break;
+        }
+    }
+    if (!haveStock(name, id) || test == 1) return;
     fstream userFile ((userPath + SLASH + name).c_str());
     vector<string> temp;
     temp.clear();
@@ -295,7 +304,7 @@ bool Trading::addSell(string const& name, string const& id, int num, double new_
 }
 
 bool Trading::trading (string const& id) {
-    if (tradingPool[id].sellsInfo.empty() || tradingPool[id].buysInfo.size() == 1) {
+    if (tradingPool[id].sellsInfo.size() == 1 || tradingPool[id].buysInfo.size() == 1) {
         setFile();
         return false; // 交易失败
     }
@@ -310,6 +319,12 @@ bool Trading::trading (string const& id) {
     // 以下交易成功
     double new_price = (buyBid.price + sellBid.price) / 2; // 新股价
     int bid_num = std::min(buyBid.num_of_shares, sellBid.num_of_shares); // 成交股数
+    // 更新挂牌股数，判断是否要出队
+    tradingPool[id].buysInfo.back().num_of_shares -= bid_num;
+    tradingPool[id].sellsInfo.back().num_of_shares -= bid_num;
+    if (tradingPool[id].buysInfo.back().num_of_shares == 0) tradingPool[id].buysInfo.pop_back();
+    if (tradingPool[id].sellsInfo.back().num_of_shares == 0) tradingPool[id].sellsInfo.pop_back();
+    setFile(); // 将最新 tradingPool 写入文件
     // 更新双方账户：持仓、成本、可用
     // 买家
     double cost = getCost(buyBid.userName, id);
@@ -320,7 +335,7 @@ bool Trading::trading (string const& id) {
     updateAvailable (buyBid.userName, bid_num * buyBid.price - bid_num * new_price); // 更新可用
     // 卖家
     if (sellBid.userName != "") { // 是用户而不是股票
-        updateHave(sellBid.userName, id, sellNum - bid_num); // 更新卖家持仓
+        // updateHave(sellBid.userName, id, bid_num); // 更新卖家持仓
         if (getHave(sellBid.userName, id) == 0) deleteId (sellBid.userName, id);
         updateAvailable (sellBid.userName, bid_num * new_price); // 更新卖家可用资金
     }
@@ -329,16 +344,11 @@ bool Trading::trading (string const& id) {
     }
     // 更新股票信息：股价 （floats_available）
     updatePrice(id, new_price);
-    // 更新挂牌股数，判断是否要出队
-    tradingPool[id].buysInfo.back().num_of_shares -= bid_num;
-    tradingPool[id].sellsInfo.back().num_of_shares -= bid_num;
-    if (tradingPool[id].buysInfo.back().num_of_shares == 0) tradingPool[id].buysInfo.pop_back();
-    if (tradingPool[id].sellsInfo.back().num_of_shares == 0) tradingPool[id].sellsInfo.pop_back();
-    setFile(); // 将最新 tradingPool 写入文件
     return true;
 }
 
 void Trading::reset() {
+    readFile();
     if (tradingPool.empty()) return;
     map<string, struct Bids>::iterator iter;
     for (iter = tradingPool.begin(); iter != tradingPool.end(); iter++) {
@@ -357,10 +367,6 @@ void Trading::reset() {
 
 void Trading::setFile() {
     ofstream out((dataPath + SLASH + "tradingpool").c_str());
-    if (tradingPool.empty()) {
-        out.close();
-        return;
-    }
     map<string, struct Bids>::iterator iter;
     for (iter = tradingPool.begin(); iter != tradingPool.end(); iter++) {
         vector<struct Buy>::iterator iterBuy;
