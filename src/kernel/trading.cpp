@@ -335,7 +335,6 @@ bool Trading::trading (string const& id) {
     updateAvailable (buyBid.userName, bid_num * buyBid.price - bid_num * new_price); // 更新可用
     // 卖家
     if (sellBid.userName != "") { // 是用户而不是股票
-        // updateHave(sellBid.userName, id, bid_num); // 更新卖家持仓
         if (getHave(sellBid.userName, id) == 0) deleteId (sellBid.userName, id);
         updateAvailable (sellBid.userName, bid_num * new_price); // 更新卖家可用资金
     }

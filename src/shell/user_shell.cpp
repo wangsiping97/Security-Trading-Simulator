@@ -64,6 +64,7 @@ bool User_Shell::match(string const& a, string const& b) { // 模糊匹配
     f[0][0] = 0;
     n = a.length();
     m = b.length();
+    if (n >= 20 || m >= 20) return false;
     for (i = 0; i < n; ++i) {
         for (int j = 0; j < m; ++j) {
             if (i < n && j < m) { // a[i + 1] 和 b[j + 1] 匹配
